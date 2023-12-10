@@ -37,10 +37,13 @@ def store():
 def index():
     page = request.args.get("page", type=int, default=1)
     per_page = request.args.get("per_page", type=int, default=10)
+    name = request.args.get("name", type=str, default="")
     try:
         categories = Category.query.filter_by(deleted_at=None).order_by(
             asc(Category.name)
         )
+        if name:
+            categories = categories.filter_by(name=name)
         total = ceil(categories.count() / per_page)
         categories = categories.paginate(page=page, per_page=per_page)
         return respond(
