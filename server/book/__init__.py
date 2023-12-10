@@ -145,6 +145,11 @@ def update(id):
 @book_bp.route("/<id>", methods=["DELETE"])
 def destroy(id):
     try:
+        if not "Authorization" in request.headers:
+            return respond_with_error()
+        user = User.query.filter_by(token=request.headers.get("Authorization")).first()
+        if (not user) or (user.role == 0):
+            return respond_with_error()
         book = Book.query.filter_by(deleted_at=None).filter(Book.id == id).first()
         if not book:
             return respond_with_error()
