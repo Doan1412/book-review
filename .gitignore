@@ -1,5 +1,5 @@
 # Server
-server/images/
+server/static/
 **/__pycache__/
 **/.DS_Store
 **/.vscode
