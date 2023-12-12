@@ -1,0 +1,32 @@
+@import '@/app/common.scss';
+
+.container {
+    width: 100vw;
+    height: 100vh;
+
+    background-image: url('../../../asset/login/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    display: flex;
+    justify-content: center;
+
+    .login-container {
+        margin: 5%;
+        padding: 12px;
+        border-radius: 12px;
+        background-color: white;
+
+        .title {
+            font-size: $fontSizeLarge;
+            text-transform: uppercase;
+        }
+
+        .signup-link {
+            text-transform: uppercase;
+            text-decoration: none;
+            text-align: center;
+        }
+    }
+}
