@@ -10,23 +10,29 @@
     background-repeat: no-repeat;
 
     display: flex;
+    align-items: center;
     justify-content: center;
 
     .login-container {
-        margin: 5%;
-        padding: 12px;
-        border-radius: 12px;
-        background-color: white;
+        width: 530px;
+        margin: 30% 0;
+        padding: 98px 75px;
+        border-radius: 8px;
+        border: 2px solid #fff;
+        background: linear-gradient(
+            132deg,
+            #fff -0.91%,
+            rgba(255, 255, 255, 0) 98.79%
+        );
 
         .title {
+            display: flex;
+            color: $titleColor;
+            line-height: normal;
+            padding-bottom: 24px;
+            font-weight: $fontBold;
+            justify-content: center;
             font-size: $fontSizeLarge;
-            text-transform: uppercase;
-        }
-
-        .signup-link {
-            text-transform: uppercase;
-            text-decoration: none;
-            text-align: center;
         }
     }
 }

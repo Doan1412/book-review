@@ -1,17 +1,33 @@
+import styles from './login-form.module.scss';
+
 export default function LoginForm() {
     return (
-        <div>
-            <div>
-                <label>Username</label>
-                <input />
+        <>
+            <div className={styles['form-item']}>
+                <input
+                    className={styles['input-container']}
+                    placeholder="Username"
+                />
+
+                <p className={styles['error-message']}>Error</p>
             </div>
 
-            <div>
-                <label>Mật khẩu</label>
-                <input />
+            <div className={styles['form-item']}>
+                <input
+                    className={styles['input-container']}
+                    placeholder="Password"
+                />
+
+                <p className={styles['error-message']}>Error</p>
             </div>
 
-            <button type="button">Đăng nhập</button>
-        </div>
+            <div className={styles['actions']}>
+                <div className={styles['sign-up']}>Sign up</div>
+
+                <button type="button" className={styles['login-btn']}>
+                    Đăng nhập
+                </button>
+            </div>
+        </>
     );
 }

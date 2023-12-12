@@ -8,10 +8,6 @@ export default function LoginContainer() {
                 <h5 className={styles['title']}>Login</h5>
 
                 <LoginForm />
-
-                <div className={styles['signup-link']}>
-                    <a href="">Sign up</a>
-                </div>
             </div>
         </div>
     );
