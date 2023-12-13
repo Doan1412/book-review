@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CgSearch } from "react-icons/cg";
-import PageLayout from "./PageLayout";
 
 export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -17,7 +16,7 @@ export default function Home() {
     headers.append("Accept", "application/json");
     headers.append("Content-Type", "application/json");
     headers.append("token", getCookie("token") as string);
-    fetch(BASE_URL + "/api/book/list", {
+    fetch(process.env.BACKEND_URL + "/api/book/list", {
       method: "GET",
       headers: headers,
     })
@@ -32,7 +31,6 @@ export default function Home() {
   }, []);
 
   return (
-    <PageLayout>
       <div className="h-full flex flex-col border-none p-4 flex-1">
         <div className="flex items-center space-x-1">
           <CgSearch size={20} />
@@ -63,7 +61,7 @@ export default function Home() {
                 title={`${value.title}`}
               >
                 <Image
-                  src={`${value.img}`}
+                  src={`${value.image}`}
                   alt={`${value.title}`}
                   title={`${value.title}`}
                   width={500}
@@ -84,6 +82,5 @@ export default function Home() {
           })}
         </div>
       </div>
-    </PageLayout>
   );
 }
