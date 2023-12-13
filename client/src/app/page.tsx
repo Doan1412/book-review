@@ -15,8 +15,8 @@ export default function Home() {
     const headers = new Headers();
     headers.append("Accept", "application/json");
     headers.append("Content-Type", "application/json");
-    headers.append("token", getCookie("token") as string);
-    fetch(process.env.BACKEND_URL + "/api/book/list", {
+    headers.append("Authorization", getCookie("token") as string);
+    fetch(process.env.BACKEND_URL + "api/v1/book", {
       method: "GET",
       headers: headers,
     })
