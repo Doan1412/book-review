@@ -14,8 +14,7 @@ class User(db.Model):
     updated_at = Column(String(100), nullable=True)
     deleted_at = Column(String(100), nullable=True)
 
-    first_name = Column(String(255), nullable=False)
-    last_name = Column(String(255), nullable=False)
+    name = Column(String(255), nullable=False)
     username = Column(String(255), nullable=False)
     password = Column(String(255), nullable=False)
     token = Column(String(255), nullable=False)
@@ -26,8 +25,7 @@ class User(db.Model):
 
     def __init__(
         self,
-        first_name: str,
-        last_name: str,
+        name: str,
         username: str,
         password: str,
         role: int = 0,
@@ -37,8 +35,7 @@ class User(db.Model):
         self.updated_at = None
         self.deleted_at = None
 
-        self.first_name = first_name
-        self.last_name = last_name
+        self.name = name
         self.username = username
         self.password = generate_password_hash(password)
         self.token = unique_id()

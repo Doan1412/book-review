@@ -12,7 +12,7 @@ db = get_db()
 
 @auth_bp.route("", methods=["POST"])
 def register():
-    requires = ["first_name", "last_name", "username", "password"]
+    requires = ["name", "username", "password"]
     try:
         if not valid_request(request, requires):
             return respond_with_error()
@@ -21,8 +21,7 @@ def register():
         if user:
             return respond_with_error()
         user = User(
-            first_name=req["first_name"],
-            last_name=req["last_name"],
+            name=req["name"],
             username=req["username"],
             password=req["password"],
         )

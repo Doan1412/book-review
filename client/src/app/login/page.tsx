@@ -23,18 +23,16 @@ export default function Login() {
   }, [router]);
   
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
-    alert("hi"+ username);
     event.preventDefault();
-
+    
     if (username.trim() === "" || password === "") {
       setNoti("Vui lòng nhập tên đăng nhập và mật khẩu");
       return;
     }
-
+    
     setLoading(true);
-
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/auth/login", {
+      const response = await fetch(process.env.BACKEND_URL +"api/v1/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

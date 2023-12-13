@@ -35,13 +35,13 @@ export default function Register() {
     const headers = new Headers();
     headers.append("Accept", "application/json");
     headers.append("Content-Type", "application/json");
-    fetch(process.env.BACKEND_URL  + "/api/auth/register", {
+    fetch(process.env.BACKEND_URL  + "/api/v1/auth", {
       method: "POST",
       headers: headers,
       body: JSON.stringify({
-        name: name,
-        username: username,
-        password: password,
+        "name": name,
+        "username": username,
+        "password": password,
       }),
     })
       .then((resp) => {
