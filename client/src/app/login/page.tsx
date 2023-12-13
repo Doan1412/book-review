@@ -50,8 +50,8 @@ export default function Login() {
 
       const data = await response.json();
 
-      if (data.status === 200 && data.token) {
-        setCookie("token", data.token);
+      if (data.success === true && data.data.token) {
+        setCookie("token", data.data.token);
         setCookie("username", username.trim());
         router.push("/");
       } else {
@@ -81,7 +81,6 @@ export default function Login() {
                 <label htmlFor="username" className="inputLabel">
                   Tên đăng nhập
                 </label>
-
                 <input
                   type="text"
                   value={username}
