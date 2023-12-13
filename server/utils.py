@@ -1,7 +1,7 @@
 import os
 from uuid import uuid4
 
-from flask import Flask, Request, jsonify
+from flask import Flask, Request, jsonify, send_from_directory
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
@@ -54,3 +54,6 @@ def respond(data={}, msg: str = "Success", success: bool = True):
 
 def respond_with_error(msg: str = "Oops! Something went wrong", error: str = ""):
     return jsonify({"message": msg, "success": False, "error": error}), 400
+
+def get_pic(filename):
+    return send_from_directory('static', filename)
