@@ -25,10 +25,11 @@ export default function Home() {
         return response.json();
       })
       .then((body) => {
-        setBooks(body.books as Book[]);
+        setBooks(body.data.books as Book[]);
         setLoading(false);
       });
   }, []);
+  console.log("Backend URL:", process.env.BACKEND_URL);
 
   return (
       <div className="h-full flex flex-col border-none p-4 flex-1">
@@ -61,7 +62,7 @@ export default function Home() {
                 title={`${value.title}`}
               >
                 <Image
-                  src={`${value.image}`}
+                  src={process.env.BACKEND_URL+ `static/${value.image}`}
                   alt={`${value.title}`}
                   title={`${value.title}`}
                   width={500}

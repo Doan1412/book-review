@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+module.exports = {
   env: {
     BACKEND_URL: process.env.BACKEND_URL,
   },
+  images: {
+    domains: ['192.168.1.181'],
+  },
 };
-
-module.exports = nextConfig;
