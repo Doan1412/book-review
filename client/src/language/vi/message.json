@@ -1,0 +1,11 @@
+{
+  "I001": "Thành công",
+  "I002": "Đăng ký thành công",
+  "I003": "Đăng nhập thành công",
+  "I004": "Đổi mật khẩu thành công",
+
+  "E001": "Thất bại",
+  "E002": "Tên đăng nhập hoặc mật khẩu không chính xác",
+  "E004": "Mật khẩu cũ không chính xác",
+  "E005": "Tên đăng nhập đã tồn tại"
+}

@@ -1,7 +1,44 @@
-@import url('https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply box-border m-0 p-0;
+}
 
 body {
-    margin: 0;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  @apply text-sm font-normal text-gray-950;
+}
+
+/* Error */
+.errorMessage {
+  @apply text-red-500;
+}
+
+/* Input */
+.inputWrap {
+  @apply flex flex-col space-y-1;
+}
+
+.inputLabel {
+  @apply text-[#848484] space-x-1;
+}
+
+.inputField {
+  @apply max-w-full p-2 rounded-md shadow-lg outline-none bg-white border border-[#505050] text-justify;
+}
+
+/* Icon button */
+.iconButton {
+  @apply p-2 rounded-full outline-none transform transition-transform hover:shadow-lg hover:bg-[#c7c4bd] focus:ring-2 active:scale-90;
+}
+
+html, body, #__next {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+[data-overlay-container="true"] {
+  height: 100% !important;
 }
