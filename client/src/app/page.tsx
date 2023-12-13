@@ -25,7 +25,7 @@ export default function Home() {
         return response.json();
       })
       .then((body) => {
-        setBooks(body.books as Book[]);
+        setBooks(body.data.books as Book[]);
         setLoading(false);
       });
   }, []);
@@ -61,7 +61,7 @@ export default function Home() {
                 title={`${value.title}`}
               >
                 <Image
-                  src={`${value.image}`}
+                  src={`${process.env.BACKEND_URL}static/${value.image}`}
                   alt={`${value.title}`}
                   title={`${value.title}`}
                   width={500}

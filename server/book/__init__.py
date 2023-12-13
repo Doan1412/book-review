@@ -60,7 +60,8 @@ def index():
     author = request.args.get("author", type=str, default="")
     title = request.args.get("title", type=str, default="")
     try:
-        books = Book.query.filter_by(deleted_at=None).order_by(asc(Book.title))
+        # books = Book.query.filter_by(deleted_at=None).order_by(asc(Book.title))
+        books = Book.query.order_by(asc(Book.title))
         if author:
             books = books.filter(Book.author.ilike(f"%{author}%"))  # type: ignore
         if title:
@@ -91,7 +92,8 @@ def index():
 @book_bp.route("/<id>", methods=["GET"])
 def show(id):
     try:
-        book = Book.query.filter_by(deleted_at=None).filter(Book.id == id).first()
+        # book = Book.query.filter_by(deleted_at=None).filter(Book.id == id).first()
+        book = Book.query.filter(Book.id == id).first()
         if not book:
             return respond_with_error()
         return respond(
@@ -114,7 +116,8 @@ def show(id):
 @book_bp.route("/<id>", methods=["POST"])
 def update(id):
     try:
-        book = Book.query.filter_by(deleted_at=None).filter(Book.id == id).first()
+        # book = Book.query.filter_by(deleted_at=None).filter(Book.id == id).first()
+        book = Book.query.filter(Book.id == id).first()
         if (not book) or (not "Authorization" in request.headers):
             return respond_with_error()
         user = User.query.filter_by(token=request.headers.get("Authorization")).first()
