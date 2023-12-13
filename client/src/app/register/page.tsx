@@ -8,7 +8,8 @@ export default function Register() {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [name, setName] = useState<string>("");
+  const [first_name, setFirstName] = useState<string>("");
+  const [last_name, setLastName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [retype, setRetype] = useState<string>("");
@@ -18,7 +19,8 @@ export default function Register() {
     setError(null);
     setLoading(true);
     if (
-      name.trim() === "" ||
+      first_name.trim() === "" ||
+      last_name.trim() === "" ||
       username.trim() === "" ||
       password === "" ||
       retype === ""
@@ -35,13 +37,14 @@ export default function Register() {
     const headers = new Headers();
     headers.append("Accept", "application/json");
     headers.append("Content-Type", "application/json");
-    fetch(process.env.BACKEND_URL  + "/api/v1/auth", {
+    fetch(process.env.BACKEND_URL  + "api/v1/auth", {
       method: "POST",
       headers: headers,
       body: JSON.stringify({
-        "name": name,
-        "username": username,
-        "password": password,
+        first_name: first_name,
+        last_name: last_name,
+        username: username,
+        password: password,
       }),
     })
       .then((resp) => {
@@ -67,16 +70,32 @@ export default function Register() {
           </h3>
 
           <div className="inputWrap">
-            <label htmlFor="username" className="inputLabel">
-              <span>Tên người dùng</span>
+            <label htmlFor="first_name" className="inputLabel">
+              <span>Tên</span>
               <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              value={name}
+              value={first_name}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setError(null);
-                setName(e.target.value);
+                setFirstName(e.target.value);
+              }}
+              className="inputField w-96"
+            />
+          </div>
+
+          <div className="inputWrap">
+            <label htmlFor="last_name" className="inputLabel">
+              <span>Họ</span>
+              <span className="text-red-500">*</span>
+            </label>
+            <input
+              type="text"
+              value={last_name}
+onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                setError(null);
+                setLastName(e.target.value);
               }}
               className="inputField w-96"
             />
