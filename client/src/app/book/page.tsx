@@ -12,12 +12,15 @@ import Link from "next/link";
 import { FiEdit } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
 import Rating from "@/components/Rating";
+import { BsSend } from "react-icons/bs";
 export default function Detail_book() {
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(true);
     const [book, setBook] = useState<Book>();
     const searchParams = useSearchParams()
     const id = searchParams.get('id');
+    const [rating, setRating] = useState<number>(0);
+    const [comment, setComment] = useState<string>("");
     useEffect(() => {
         async function fetchBook() {
             if (!hasCookie("token")) {
@@ -45,7 +48,8 @@ export default function Detail_book() {
             }
         }
         fetchBook();
-    }, [router]);
+    }, [id,router]);
+
     if (!book) {
         return (
             <div className="w-full h-full flex items-center justify-center">
@@ -94,7 +98,7 @@ export default function Detail_book() {
                                 </Button>
 
                                 <Button
-                                    onClick={deleteBook}
+                                    // onClick={deleteBook}
                                     className="iconButton"
                                 >
                                     <AiOutlineDelete size={20} />
@@ -191,17 +195,17 @@ export default function Detail_book() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            {comments?.map((value, index) => (
+                                            {book.reviews?.map((value, index) => (
                                                 <div
                                                     key={index}
                                                     className="flex flex-col bg-[#f0eee3] px-3 py-2 rounded-xl"
                                                 >
                                                     <div className="flex flex-row justify-between">
                                                         <span className="font-bold">
-                                                            {value.name}
+                                                            {value.username}
                                                         </span>
                                                         <span className="italic">
-                                                            {value.date}
+                                                            {value.create_at}
                                                         </span>
                                                     </div>
                                                     <div className="flex flex-row justify-between">

@@ -1,5 +1,5 @@
 import { Category } from "./Category";
-
+import { Review} from "./Review";
 export interface Book {
     id : number,
     created_at : Date,
@@ -12,4 +12,5 @@ export interface Book {
     description : string,
     image : string,
     categories: Category[];
+    reviews : Review[];
 }

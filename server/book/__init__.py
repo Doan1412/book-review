@@ -128,7 +128,7 @@ def show(id):
 
             comment_data = {
                 'id': comment.id,
-                'user_name': user_full_name,
+                'username': user_full_name,
                 'content': comment.content,
                 'star': comment.star,
                 'created_at': comment.created_at,
@@ -154,7 +154,7 @@ def show(id):
                 "price": book.price,
                 "description": book.description,
                 "image": book.image,
-                "review": comment_list,
+                "reviews": comment_list,
                 "categories": categories
             }
         )
