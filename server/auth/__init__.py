@@ -49,7 +49,7 @@ def login():
         user.updated_at = datetime.now()
         db.session.add(user)
         db.session.commit()
-        return respond(data={"token": token})
+        return respond(data={"token": token, "role": user.role})
     except Exception as error:
         db.session.rollback()
         return respond_with_error(error=str(error))
@@ -73,7 +73,7 @@ def change_password():
         user.updated_at = datetime.now()
         db.session.add(user)
         db.session.commit()
-        return respond(data={"token": token})
+        return respond(data={"token": token,"role": user.role})
     except Exception as error:
         db.session.rollback()
         return respond_with_error(error=str(error))

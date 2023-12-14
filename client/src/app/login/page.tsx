@@ -53,6 +53,7 @@ export default function Login() {
       if (data.success === true && data.data.token) {
         setCookie("token", data.data.token);
         setCookie("username", username.trim());
+        setCookie("role", data.data.role);
         router.push("/");
       } else {
         const message = Translate("VI", data.msg);
