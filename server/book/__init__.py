@@ -135,11 +135,15 @@ def show(id):
                 'updated_at': comment.updated_at,
             }
             comment_list.append(comment_data)
-        book_category = BookCategory.query.filter_by(book_id=book.id).first()
-        category = None  # Khởi tạo category là None
-
-        if book_category:
+        book_categories = BookCategory.query.filter_by(book_id=book.id).all()
+        categories = []
+        for book_category in book_categories:
             category = Category.query.filter_by(id=book_category.category_id).first()
+            if category:
+                categories.append({
+                    "id": category.id,
+                    "name": category.name
+                })
         return respond(
             data={
                 "id": book.id,
@@ -151,10 +155,7 @@ def show(id):
                 "description": book.description,
                 "image": book.image,
                 "review": comment_list,
-                "category": {
-                    "id": category.id if category else None,
-                    "name": category.name if category else None
-                }
+                "categories": categories
             }
         )
     except Exception as error:

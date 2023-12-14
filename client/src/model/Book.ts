@@ -1,3 +1,5 @@
+import { Category } from "./Category";
+
 export interface Book {
     id : number,
     created_at : Date,
@@ -9,4 +11,5 @@ export interface Book {
     price : number,
     description : string,
     image : string,
+    categories: Category[];
 }
