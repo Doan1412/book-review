@@ -1,11 +1,10 @@
 export interface Review {
-    id: Number;
-    content: String;
-    star: Number;
-    create_at: String;
-    username: String;
-    name : String;
-    updated_at: String;
-    fullname: String;
-  }
+    id: number;
+    content: string;
+    star: number;
+    create_at: string;
+    username: string;
+    updated_at: string;
+    fullname: string;
+}
   

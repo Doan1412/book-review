@@ -132,24 +132,25 @@ def get_by_book_id(book_id):
         user = User.query.filter_by(token=request.headers.get("Authorization")).first()
         if (not user) or (user.role == 0):
             return respond_with_error()
-        comments = Comment.query.filter_by(Comment.book_id == book_id).order_by(Comment.created_at.desc()).all()
-        comments = comments.paginate(page=page, per_page=per_page)
+        comments = Comment.query.filter(Comment.book_id == id, Comment.deleted_at == None).order_by(Comment.created_at.desc()).paginate(page=page, per_page=per_page)
         comment_list = []
         for comment in comments.items:
             user_of_comment = User.query.filter_by(id=comment.user_id).first()
             if user_of_comment:
+                username = user_of_comment.username
                 user_full_name = f"{user_of_comment.first_name} {user_of_comment.last_name}"
             else:
+                username = "Unknown"
                 user_full_name = "Unknown"
 
             comment_data = {
                 'id': comment.id,
-                'book_id': comment.book_id,
-                'user_name': user_full_name,
+                'fullname': user_full_name,
                 'content': comment.content,
                 'star': comment.star,
                 'created_at': comment.created_at,
                 'updated_at': comment.updated_at,
+                'username' : username, 
             }
             comment_list.append(comment_data)
 

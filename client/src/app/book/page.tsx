@@ -1,5 +1,5 @@
 "use client";
-import { usePathname, useSearchParams, useRouter } from 'next/navigation';
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { Book } from "@/model/Book";
 import { useEffect, useState } from "react";
 import { getCookie, hasCookie } from "cookies-next";
@@ -14,21 +14,22 @@ import Rating from "@/components/Rating";
 import { BsSend } from "react-icons/bs";
 import Translate from "@/language/translate";
 import Popup from "@/components/Popup";
-import { Review } from '@/model/Review';
+import { Review } from "@/model/Review";
 
 export default function Detail_book() {
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(true);
     const [book, setBook] = useState<Book>();
-    const searchParams = useSearchParams()
-    const id = searchParams.get('id');
+    const searchParams = useSearchParams();
+    const id = searchParams.get("id");
     const [rating, setRating] = useState<number>(0);
     const [comment, setComment] = useState<string>("");
     const [noti, setNoti] = useState<string | null>(null);
     const [editCommentId, setEditCommentId] = useState<number>(-1);
-    const [editedComment, setEditedComment] = useState('');
+    const [editedComment, setEditedComment] = useState("");
     const [comments, setComments] = useState<Review[] | null>(null);
-    const username = getCookie("usernam") as string;
+    const username = getCookie("username") as string;
+    console.log("Cookie: " + username);
     useEffect(() => {
         async function fetchBook() {
             if (!hasCookie("token")) {
@@ -45,8 +46,9 @@ export default function Detail_book() {
                 const data = await response.data;
 
                 if (data.success === true) {
+                    console.log(data.data);
                     setBook(data.data);
-                    setComments(data.data.reviews)
+                    setComments(data.data.reviews);
                     setLoading(false);
                 } else {
                     console.log(data.error);
@@ -62,35 +64,34 @@ export default function Detail_book() {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        fetch(
-            process.env.BACKEND_URL +
-            `/api/comment/book/${book?.id}`,
-          {
+        fetch(process.env.BACKEND_URL + `/api/comment/book/${book?.id}`, {
             method: "GET",
             headers: headers,
-          }
-        )
-          .then((response) => {
-            if (!response.ok) console.error(response.status);
-            return response.json();
-          })
-          .then((body) => {
-            setComments(body.reviews as Review[]);
-          });
-      };
+        })
+            .then((response) => {
+                if (!response.ok) console.error(response.status);
+                return response.json();
+            })
+            .then((body) => {
+                setComments(body.reviews as Review[]);
+            });
+    };
     const deleteBook = async () => {
         try {
             const headers = new Headers();
             headers.append("Accept", "application/json");
             headers.append("Content-Type", "application/json");
             headers.append("Authorization", getCookie("token") as string);
-            const response = await fetch(process.env.BACKEND_URL + "api/v1/book" + id, {
-                method: "DELETE",
-                headers: headers,
-              });
+            const response = await fetch(
+                process.env.BACKEND_URL + "api/v1/book" + id,
+                {
+                    method: "DELETE",
+                    headers: headers,
+                }
+            );
 
             if (!response.ok) {
-            throw new Error("Failed to fetch data");
+                throw new Error("Failed to fetch data");
             }
             const data = await response.json();
             if (data.success === true) {
@@ -99,74 +100,76 @@ export default function Detail_book() {
                 const message = Translate("VI", data.msg);
                 setNoti(message);
             }
-
         } catch (error) {
             console.error("Error:", error);
         }
     };
-    const handleDeleteComment = (indexToRemove : number) => {
+    const handleDeleteComment = (indexToRemove: number) => {
         console.log(indexToRemove);
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        headers.append("token", getCookie("token") as string);
-        fetch(process.env.BACKEND_URL + `/api/v1/comment/`+indexToRemove, {
-          method: "DELETE",
-          headers: headers,
-          body: JSON.stringify({
-            review_id: indexToRemove,
-          }),
+        headers.append("Authorization", getCookie("token") as string);
+        fetch(process.env.BACKEND_URL + `/api/v1/comment/` + indexToRemove, {
+            method: "DELETE",
+            headers: headers,
         }).then((response) => {
-          if (!response.ok) {
-            console.error(response.status);
-          } else getComments();
-          return;
+            if (!response.ok) {
+                console.error(response.status);
+            } else getComments();
+            return;
         });
         return;
-      };
-      const handleEditComment = (commentId: number) => {
+    };
+    const handleEditComment = (commentId: number) => {
         setEditCommentId(commentId);
         if (comments) {
-            const foundComment = comments.find(comment => comment.id === commentId);
+            const foundComment = comments.find(
+                (comment) => comment.id === commentId
+            );
             if (foundComment) {
-              setEditedComment(foundComment.content.toString());
+                setEditedComment(foundComment.content.toString());
             } else {
-              console.error(`Không tìm thấy comment với id: ${commentId}`);
+                console.error(`Không tìm thấy comment với id: ${commentId}`);
             }
-          } else {
-            console.error('Không có danh sách comment');
+        } else {
+            console.error("Không có danh sách comment");
         }
-      };
-      const handleSaveEdit = async (commentId : number, newComment : string, star: number) => {
+    };
+    const handleSaveEdit = async (
+        commentId: number,
+        newComment: string,
+        star: number
+    ) => {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        headers.append("token", getCookie("token") as string);
-        fetch(process.env.BACKEND_URL + `/api/review`, {
-          method: "PUT",
-          headers: headers,
-          body: JSON.stringify({
-            review_id : commentId,
-            star : star,
-            comment : newComment
-          }),
+        headers.append("Authorization", getCookie("token") as string);
+        fetch(process.env.BACKEND_URL + `/api/comment`, {
+            method: "PUT",
+            headers: headers,
+            body: JSON.stringify({
+                id: commentId,
+                star: star,
+                content: newComment,
+            }),
         }).then((response) => {
-          if (!response.ok) {
-            console.error(response.status);
-          } else {
-            getComments();
-          }
-          setEditCommentId(-1);
-          return;
+            if (!response.ok) {
+                console.error(response.status);
+            } else {
+                getComments();
+            }
+            setEditCommentId(-1);
+            return;
         });
         setEditCommentId(-1);
         return;
-      };
+    };
 
     const handleCancelEdit = () => {
         setEditCommentId(-1); // Hủy chế độ chỉnh sửa
         // Đặt lại nội dung chỉnh sửa về rỗng để không giữ lại dữ liệu đã chỉnh sửa
-        setEditedComment('');
+        setEditedComment("");
     };
     const postComment = async () => {
         try {
@@ -174,13 +177,16 @@ export default function Detail_book() {
             headers.append("Accept", "application/json");
             headers.append("Content-Type", "application/json");
             headers.append("Authorization", getCookie("token") as string);
-            const response = await fetch(process.env.BACKEND_URL +"api/v1/comment/", {
-                method: "POST",
-                headers: headers,
-              });
+            const response = await fetch(
+                process.env.BACKEND_URL + "api/v1/comment/",
+                {
+                    method: "POST",
+                    headers: headers,
+                }
+            );
 
             if (!response.ok) {
-            throw new Error("Failed to fetch data");
+                throw new Error("Failed to fetch data");
             }
             const data = await response.json();
             if (data.success === true) {
@@ -189,7 +195,6 @@ export default function Detail_book() {
                 const message = Translate("VI", data.msg);
                 setNoti(message);
             }
-
         } catch (error) {
             console.error("Error:", error);
         }
@@ -206,7 +211,9 @@ export default function Detail_book() {
             <div className="h-full flex flex-row">
                 <Navigation />
                 <div className="flex-1 overflow-auto">
-                {noti && <Popup message={noti} close={() => setNoti(null)} />}
+                    {noti && (
+                        <Popup message={noti} close={() => setNoti(null)} />
+                    )}
                     <div className="p-6">
                         <div className="w-full bg-[#f0eee3] flex flex-row items-center justify-center space-x-16">
                             {book &&
@@ -420,7 +427,8 @@ export default function Detail_book() {
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        {value.username === username && (
+                                                        {value.username ===
+                                                            username && (
                                                             <div>
                                                                 {!editCommentId && (
                                                                     <>
