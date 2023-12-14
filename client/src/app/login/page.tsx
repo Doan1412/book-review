@@ -17,7 +17,7 @@ export default function Login() {
 
   useEffect(() => {
     if (hasCookie("token")) {
-      router.push("/home");
+      router.push("/");
       return;
     }
   }, [router]);
