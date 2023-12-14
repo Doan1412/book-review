@@ -84,7 +84,7 @@ export default function Detail_book() {
             headers.append("Accept", "application/json");
             headers.append("Content-Type", "application/json");
             headers.append("Authorization", getCookie("token") as string);
-            const response = await fetch(process.env.BACKEND_URL +"api/v1/book/" , {
+            const response = await fetch(process.env.BACKEND_URL + "api/v1/book" + id, {
                 method: "DELETE",
                 headers: headers,
               });
@@ -162,12 +162,33 @@ export default function Detail_book() {
         setEditCommentId(-1);
         return;
       };
-    
-      const handleCancelEdit = () => {
-        setEditCommentId(-1); // Hủy chế độ chỉnh sửa
-        // Đặt lại nội dung chỉnh sửa về rỗng để không giữ lại dữ liệu đã chỉnh sửa
-        setEditedComment('');
+    const postComment = async () => {
+        try {
+            const headers = new Headers();
+            headers.append("Accept", "application/json");
+            headers.append("Content-Type", "application/json");
+            headers.append("Authorization", getCookie("token") as string);
+            const response = await fetch(process.env.BACKEND_URL +"api/v1/comment/", {
+                method: "POST",
+                headers: headers,
+              });
+
+            if (!response.ok) {
+            throw new Error("Failed to fetch data");
+            }
+            const data = await response.json();
+            if (data.success === true) {
+                router.push("/");
+            } else {
+                const message = Translate("VI", data.msg);
+                setNoti(message);
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
     };
+
     if (!book) {
         return (
             <div className="w-full h-full flex items-center justify-center">

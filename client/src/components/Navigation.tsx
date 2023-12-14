@@ -26,21 +26,23 @@ export default function Navigation() {
         );
       })}
 
-      {token ? (
+    {token ? (
         <div className="space-y-2 flex flex-col">
           <Link href={"/book/create"} className="iconButton">
             <LuBookPlus size={25} />
           </Link>
 
-          <button
-            onClick={() => {
-              deleteCookie("token");
-              setToken(null);
-            }}
-            className="iconButton"
-          >
-            <FiLogOut size={25} />
-          </button>
+          <Link href={"/login"}> {}
+            <button
+              onClick={() => {
+                deleteCookie("token");
+                setToken(null);
+              }}
+              className="iconButton"
+            >
+              <FiLogOut size={25} />
+            </button>
+          </Link>
         </div>
       ) : (
         <Link href={"/login"} className="iconButton">
