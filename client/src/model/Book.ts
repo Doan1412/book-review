@@ -1,7 +1,7 @@
 import { Category } from "./Category";
 import { Review} from "./Review";
 export interface Book {
-    id : number,
+    id : string,
     created_at : Date,
     updated_at : Date,
     deleted_at : Date,

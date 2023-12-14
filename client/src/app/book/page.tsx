@@ -25,10 +25,11 @@ export default function Detail_book() {
     const [rating, setRating] = useState<number>(0);
     const [comment, setComment] = useState<string>("");
     const [noti, setNoti] = useState<string | null>(null);
-    const [editCommentId, setEditCommentId] = useState<number>(-1);
+    const [editCommentId, setEditCommentId] = useState<string>("");
     const [editedComment, setEditedComment] = useState("");
     const [comments, setComments] = useState<Review[] | null>(null);
     const username = getCookie("username") as string;
+    // const role = getCookie("role") as number;
     console.log("Cookie: " + username);
     useEffect(() => {
         async function fetchBook() {
@@ -64,7 +65,8 @@ export default function Detail_book() {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
-        fetch(process.env.BACKEND_URL + `/api/comment/book/${book?.id}`, {
+        headers.append("Authorization", getCookie("token") as string);
+        fetch(process.env.BACKEND_URL + `api/v1/comment/book/${book?.id}`, {
             method: "GET",
             headers: headers,
         })
@@ -73,7 +75,7 @@ export default function Detail_book() {
                 return response.json();
             })
             .then((body) => {
-                setComments(body.reviews as Review[]);
+                setComments(body.data as Review[]);
             });
     };
     const deleteBook = async () => {
@@ -104,7 +106,7 @@ export default function Detail_book() {
             console.error("Error:", error);
         }
     };
-    const handleDeleteComment = (indexToRemove: number) => {
+    const handleDeleteComment = (indexToRemove: string) => {
         console.log(indexToRemove);
         const headers = new Headers();
         headers.append("Accept", "application/json");
@@ -121,7 +123,7 @@ export default function Detail_book() {
         });
         return;
     };
-    const handleEditComment = (commentId: number) => {
+    const handleEditComment = (commentId: string) => {
         setEditCommentId(commentId);
         if (comments) {
             const foundComment = comments.find(
@@ -137,7 +139,7 @@ export default function Detail_book() {
         }
     };
     const handleSaveEdit = async (
-        commentId: number,
+        commentId: string,
         newComment: string,
         star: number
     ) => {
@@ -145,11 +147,10 @@ export default function Detail_book() {
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
         headers.append("Authorization", getCookie("token") as string);
-        fetch(process.env.BACKEND_URL + `/api/comment`, {
+        fetch(process.env.BACKEND_URL + `api/v1/comment/`+commentId, {
             method: "PUT",
             headers: headers,
             body: JSON.stringify({
-                id: commentId,
                 star: star,
                 content: newComment,
             }),
@@ -159,29 +160,38 @@ export default function Detail_book() {
             } else {
                 getComments();
             }
-            setEditCommentId(-1);
+            setEditCommentId("");
             return;
         });
-        setEditCommentId(-1);
+        setEditCommentId('');
         return;
     };
 
     const handleCancelEdit = () => {
-        setEditCommentId(-1); // Hủy chế độ chỉnh sửa
+        setEditCommentId(''); // Hủy chế độ chỉnh sửa
         // Đặt lại nội dung chỉnh sửa về rỗng để không giữ lại dữ liệu đã chỉnh sửa
         setEditedComment("");
     };
     const postComment = async () => {
+        setComment(comment.trim());
+        if (comment === "" || 0 > rating || 5 < rating || !book) {
+        return;
+        }
         try {
             const headers = new Headers();
             headers.append("Accept", "application/json");
             headers.append("Content-Type", "application/json");
             headers.append("Authorization", getCookie("token") as string);
             const response = await fetch(
-                process.env.BACKEND_URL + "api/v1/comment/",
+                process.env.BACKEND_URL + "api/v1/comment",
                 {
                     method: "POST",
                     headers: headers,
+                    body: JSON.stringify({
+                        star: rating,
+                        content: comment,
+                        book_id: book.id
+                    }),
                 }
             );
 
@@ -190,10 +200,11 @@ export default function Detail_book() {
             }
             const data = await response.json();
             if (data.success === true) {
-                router.push("/");
+                setRating(0);
+                setComment("");
+                getComments();
             } else {
-                const message = Translate("VI", data.msg);
-                setNoti(message);
+                console.error(response.status);
             }
         } catch (error) {
             console.error("Error:", error);
@@ -243,6 +254,7 @@ export default function Detail_book() {
                         </div>
 
                         <div className="bg-[#fdfcf8] w-full rounded-xl -mt-12">
+
                             <div className="flex flex-row justify-end items-center px-6 pt-4 space-x-4">
                                 <Button className="iconButton">
                                     <Link href={`/book/edit?id=${book.id}`}>
@@ -389,7 +401,7 @@ export default function Detail_book() {
                                                                         className="iconButton"
                                                                         onClick={() =>
                                                                             handleSaveEdit(
-                                                                                value.id.valueOf(),
+                                                                                value.id,
                                                                                 editedComment,
                                                                                 value.star.valueOf()
                                                                             )
@@ -430,38 +442,36 @@ export default function Detail_book() {
                                                         {value.username ===
                                                             username && (
                                                             <div>
-                                                                {!editCommentId && (
-                                                                    <>
-                                                                        <button
-                                                                            className="iconButton"
-                                                                            onClick={() =>
-                                                                                handleEditComment(
-                                                                                    value.id.valueOf()
-                                                                                )
+                                                                <>
+                                                                    <button
+                                                                        className="iconButton"
+                                                                        onClick={() =>
+                                                                            handleEditComment(
+                                                                                value.id.valueOf()
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <FiEdit
+                                                                            size={
+                                                                                20
                                                                             }
-                                                                        >
-                                                                            <FiEdit
-                                                                                size={
-                                                                                    20
-                                                                                }
-                                                                            />
-                                                                        </button>
-                                                                        <button
-                                                                            className="iconButton"
-                                                                            onClick={() =>
-                                                                                handleDeleteComment(
-                                                                                    value.id.valueOf()
-                                                                                )
+                                                                        />
+                                                                    </button>
+                                                                    <button
+                                                                        className="iconButton"
+                                                                        onClick={() =>
+                                                                            handleDeleteComment(
+                                                                                value.id
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        <AiOutlineDelete
+                                                                            size={
+                                                                                21
                                                                             }
-                                                                        >
-                                                                            <AiOutlineDelete
-                                                                                size={
-                                                                                    21
-                                                                                }
-                                                                            />
-                                                                        </button>
-                                                                    </>
-                                                                )}
+                                                                        />
+                                                                    </button>
+                                                                </>
                                                             </div>
                                                         )}
                                                     </div>

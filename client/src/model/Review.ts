@@ -1,5 +1,5 @@
 export interface Review {
-    id: number;
+    id: string;
     content: string;
     star: number;
     create_at: string;

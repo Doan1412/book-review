@@ -16,7 +16,7 @@ db = get_db()
 
 @comment_bp.route('', methods=['POST'])
 def store():
-    requires = ["book_id","user_id","content", "star"]
+    requires = ["book_id","content", "star"]
     try:
         if (not valid_request(request, requires)) or (
             not "Authorization" in request.headers
@@ -26,7 +26,7 @@ def store():
         if (not user) :
             return respond_with_error()
         req = request.get_json()
-        new_comment = Comment(book_id=req["book_id"], user_id=req["user_id"], content=req["content"], star=req["star"])
+        new_comment = Comment(book_id=req["book_id"], user_id=user.id, content=req["content"], star=req["star"])
         db.session.add(new_comment)
         db.session.commit()
         return respond()
@@ -75,20 +75,17 @@ def update_comment(comment_id):
         user = User.query.filter_by(token=request.headers.get("Authorization")).first()
         if (not user) :
             return respond_with_error()
-        comment = Comment.query(Comment).filter(Comment.id == comment_id).first()
+        comment = Comment.query.filter(Comment.id == comment_id).first()
 
-        if comment:
-            data = request.json
-            comment.content = data.get('content', comment.content)
-            comment.star = data.get('star', comment.star)
-            comment.updated_at = datetime.now()
+        data = request.json
+        comment.content = data.get('content', comment.content)
+        comment.star = data.get('star', comment.star)
+        comment.updated_at = datetime.now()
 
-            db.session.commit()
-            db.session.close()
+        db.session.commit()
+        db.session.close()
 
-            return respond()
-        else:
-            return respond_with_error()
+        return respond()
     except Exception as error:
         db.session.rollback()
         return respond_with_error(error=str(error))
@@ -120,7 +117,7 @@ def delete_comment(comment_id):
         return respond_with_error(error=str(error))
     
 
-@comment_bp.route('/book/<book_id>', methods=['DELETE'])
+@comment_bp.route('/book/<book_id>', methods=['GET'])
 def get_by_book_id(book_id):
     page = request.args.get("page", type=int, default=1)
     per_page = request.args.get("per_page", type=int, default=10)
@@ -130,9 +127,10 @@ def get_by_book_id(book_id):
         ):
             return respond_with_error()
         user = User.query.filter_by(token=request.headers.get("Authorization")).first()
-        if (not user) or (user.role == 0):
+        print(user)
+        if (not user):
             return respond_with_error()
-        comments = Comment.query.filter(Comment.book_id == id, Comment.deleted_at == None).order_by(Comment.created_at.desc()).paginate(page=page, per_page=per_page)
+        comments = Comment.query.filter(Comment.book_id == book_id, Comment.deleted_at == None).order_by(Comment.created_at.desc()).paginate(page=page, per_page=per_page)
         comment_list = []
         for comment in comments.items:
             user_of_comment = User.query.filter_by(id=comment.user_id).first()
