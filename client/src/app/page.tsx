@@ -1,4 +1,6 @@
 "use client";
+import Navigation from "@/components/Navigation";
+import Popup from "@/components/Popup";
 import Spinner from "@/components/Spinner";
 import { Book } from "@/model/Book";
 import { getCookie } from "cookies-next";
@@ -10,6 +12,7 @@ import { CgSearch } from "react-icons/cg";
 export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [books, setBooks] = useState<Book[] | null>(null);
+  const [noti, setNoti] = useState<string | null>(null);
 
   useEffect(() => {
     const headers = new Headers();
@@ -34,56 +37,67 @@ export default function Home() {
   console.log("Backend URL:", process.env.BACKEND_URL);
 
   return (
-      <div className="h-full flex flex-col border-none p-4 flex-1">
-        <div className="flex items-center space-x-1">
-          <CgSearch size={20} />
+    <div className="h-full flex flex-row">
+      <Navigation />
+      <div className="flex-1 overflow-auto">
+          {noti && (
+              <Popup message={noti} close={() => setNoti(null)} />
+          )}
+          <div className="p-6">
+            <div className="h-full flex flex-col border-none p-4 flex-1">
+              <div className="flex items-center space-x-1">
+                <CgSearch size={20} />
 
-          <input
-            type="text"
-            placeholder="Tìm sách, tác giả, năm sản xuất, thể loại..."
-            className="p-1 bg-[#f0eee3] truncate outline-none flex-1"
-          />
-        </div>
-
-        {loading && (
-          <div className="h-full flex items-center justify-center">
-            <Spinner />
-          </div>
-        )}
-
-        <div className="h-full flex flex-wrap gap-6 justify-center flex-1 p-4 overflow-auto">
-          {books?.map((value, index) => {
-            return (
-              <Link
-                key={index}
-                href={{
-                  pathname: "book",
-                  query: { id: value.id.toString() },
-                }}
-                className="flex flex-col justify-center border outline-none shadow-xl rounded-xl w-72 h-fit overflow-hidden hover:opacity-80"
-                title={`${value.title}`}
-              >
-                <Image
-                  src={process.env.BACKEND_URL+ `static/${value.image}`}
-                  alt={`${value.title}`}
-                  title={`${value.title}`}
-                  width={500}
-                  height={500}
-                  className="w-auto object-contain"
-                  priority
+                <input
+                  type="text"
+                  placeholder="Tìm sách, tác giả, năm sản xuất, thể loại..."
+                  className="p-1 bg-[#f0eee3] truncate outline-none flex-1"
                 />
+              </div>
 
-                <div className="flex flex-col p-2">
-                  <span className="font-bold uppercase truncate">
-                    {value.title}
-                  </span>
-
-                  <span className="italic truncate">{value.author}</span>
+              {loading && (
+                <div className="h-full flex items-center justify-center">
+                  <Spinner />
                 </div>
-              </Link>
-            );
-          })}
-        </div>
+              )}
+
+              <div className="h-full flex flex-wrap gap-6 justify-center flex-1 p-4 overflow-auto">
+                {books?.map((value, index) => {
+                  return (
+                    <Link
+                      key={index}
+                      href={{
+                        pathname: "book",
+                        query: { id: value.id.toString() },
+                      }}
+                      className="flex flex-col justify-center border outline-none shadow-xl rounded-xl w-72 h-fit overflow-hidden hover:opacity-80"
+                      title={`${value.title}`}
+                    >
+                      <Image
+                        src={process.env.BACKEND_URL+ `static/${value.image}`}
+                        alt={`${value.title}`}
+                        title={`${value.title}`}
+                        width={500}
+                        height={500}
+                        className="w-auto object-contain"
+                        priority
+                      />
+
+                      <div className="flex flex-col p-2">
+                        <span className="font-bold uppercase truncate">
+                          {value.title}
+                        </span>
+
+                        <span className="italic truncate">{value.author}</span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
       </div>
+    </div>
   );
 }

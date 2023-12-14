@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { LuBookPlus } from "react-icons/lu";
 import { TbHome } from "react-icons/tb";
+import { FaRegUserCircle } from "react-icons/fa";
 
 export default function Navigation() {
   const navigateButton = [{ url: "/", icon: <TbHome size={25} /> }];
@@ -43,12 +44,18 @@ export default function Navigation() {
               <FiLogOut size={25} />
             </button>
           </Link>
+          <Link href={"/profile"} className="iconButton">
+            <FaRegUserCircle size={25}/>
+          </Link>
         </div>
       ) : (
         <Link href={"/login"} className="iconButton">
           <FiLogIn size={25} />
         </Link>
-      )}
+        
+      ) 
+      
+      }
     </div>
   );
 }

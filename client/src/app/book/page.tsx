@@ -29,7 +29,7 @@ export default function Detail_book() {
     const [editedComment, setEditedComment] = useState("");
     const [comments, setComments] = useState<Review[] | null>(null);
     const username = getCookie("username") as string;
-    // const role = getCookie("role") as number;
+    const role = getCookie("role") as string;
     console.log("Cookie: " + username);
     useEffect(() => {
         async function fetchBook() {
@@ -98,9 +98,9 @@ export default function Detail_book() {
             const data = await response.json();
             if (data.success === true) {
                 router.push("/");
+                setNoti("Xóa sách thành công");
             } else {
-                const message = Translate("VI", data.msg);
-                setNoti(message);
+                console.log("Failed to delete");
             }
         } catch (error) {
             console.error("Error:", error);
@@ -118,7 +118,10 @@ export default function Detail_book() {
         }).then((response) => {
             if (!response.ok) {
                 console.error(response.status);
-            } else getComments();
+            } else {
+                getComments();
+                setNoti("Xóa comment thành công")
+            }
             return;
         });
         return;
@@ -254,21 +257,24 @@ export default function Detail_book() {
                         </div>
 
                         <div className="bg-[#fdfcf8] w-full rounded-xl -mt-12">
+                            {
+                                role === "1" && (
+                                    <div className="flex flex-row justify-end items-center px-6 pt-4 space-x-4">
+                                        <Button className="iconButton">
+                                            <Link href={`/book/edit?id=${book.id}`}>
+                                                <FiEdit size={20} />
+                                            </Link>
+                                        </Button>
 
-                            <div className="flex flex-row justify-end items-center px-6 pt-4 space-x-4">
-                                <Button className="iconButton">
-                                    <Link href={`/book/edit?id=${book.id}`}>
-                                        <FiEdit size={20} />
-                                    </Link>
-                                </Button>
-
-                                <Button
-                                    onClick={deleteBook}
-                                    className="iconButton"
-                                >
-                                    <AiOutlineDelete size={20} />
-                                </Button>
-                            </div>
+                                        <Button
+                                            onClick={deleteBook}
+                                            className="iconButton"
+                                        >
+                                            <AiOutlineDelete size={20} />
+                                        </Button>
+                                    </div>
+                                )
+                            }
 
                             <div className="flex flex-row space-x-10 overflow-auto px-6 py-4">
                                 <div className="flex-1 space-y-2">
