@@ -28,7 +28,7 @@ export default function Detail_book() {
     const [editCommentId, setEditCommentId] = useState<number>(-1);
     const [editedComment, setEditedComment] = useState('');
     const [comments, setComments] = useState<Review[] | null>(null);
-    
+    const username = getCookie("usernam") as string;
     useEffect(() => {
         async function fetchBook() {
             if (!hasCookie("token")) {
@@ -110,7 +110,7 @@ export default function Detail_book() {
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
         headers.append("token", getCookie("token") as string);
-        fetch(process.env.BACKEND_URL + `/api/review`, {
+        fetch(process.env.BACKEND_URL + `/api/v1/comment/`+indexToRemove, {
           method: "DELETE",
           headers: headers,
           body: JSON.stringify({
@@ -420,10 +420,7 @@ export default function Detail_book() {
                                                                 </div>
                                                             )}
                                                         </div>
-                                                        {value.username ===
-                                                            getCookie(
-                                                                "username"
-                                                            ) && (
+                                                        {value.username === username && (
                                                             <div>
                                                                 {!editCommentId && (
                                                                     <>
