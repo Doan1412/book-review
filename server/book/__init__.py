@@ -8,6 +8,9 @@ from sqlalchemy import asc
 
 from model.Book import Book
 from model.User import User
+from model.Comment import Comment
+from model.BookCategory import BookCategory
+from model.Category import Category
 from utils import get_db, respond, respond_with_error
 
 book_bp = Blueprint("book", __name__)
@@ -60,8 +63,8 @@ def index():
     author = request.args.get("author", type=str, default="")
     title = request.args.get("title", type=str, default="")
     try:
-        # books = Book.query.filter_by(deleted_at=None).order_by(asc(Book.title))
-        books = Book.query.order_by(asc(Book.title))
+        books = Book.query.filter_by(deleted_at=None).order_by(asc(Book.title))
+        # books = Book.query.order_by(asc(Book.title))
         if author:
             books = books.filter(Book.author.ilike(f"%{author}%"))  # type: ignore
         if title:
@@ -91,11 +94,33 @@ def index():
 
 @book_bp.route("/<id>", methods=["GET"])
 def show(id):
+    page = request.args.get("page", type=int, default=1)
+    per_page = request.args.get("per_page", type=int, default=10)
     try:
         # book = Book.query.filter_by(deleted_at=None).filter(Book.id == id).first()
         book = Book.query.filter(Book.id == id).first()
         if not book:
             return respond_with_error()
+        comments = Comment.query.filter(Comment.book_id == id, Comment.deleted_at == None).order_by(Comment.created_at.desc()).paginate(page=page, per_page=per_page)
+        comment_list = []
+        for comment in comments.items:
+            user_of_comment = User.query.filter_by(id=comment.user_id).first()
+            if user_of_comment:
+                user_full_name = f"{user_of_comment.first_name} {user_of_comment.last_name}"
+            else:
+                user_full_name = "Unknown"
+
+            comment_data = {
+                'id': comment.id,
+                'user_name': user_full_name,
+                'content': comment.content,
+                'star': comment.star,
+                'created_at': comment.created_at,
+                'updated_at': comment.updated_at,
+            }
+            comment_list.append(comment_data)
+        book_category = BookCategory.query.filter_by(book_id=book.id).first()
+        category = Category.query.filter_by(id = book_category.category_id).first()
         return respond(
             data={
                 "id": book.id,
@@ -106,6 +131,11 @@ def show(id):
                 "price": book.price,
                 "description": book.description,
                 "image": book.image,
+                "review": comment_list,
+                "category": {
+                    "id": category.id,
+                    "name": category.name
+                }
             }
         )
     except Exception as error:

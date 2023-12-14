@@ -4,6 +4,7 @@ from auth import auth_bp
 from book import book_bp
 from category import category_bp
 from user import user_bp
+from comment import comment_bp
 from utils import *
 
 app = get_app()
@@ -12,6 +13,7 @@ app.register_blueprint(auth_bp, url_prefix="/api/v1/auth")
 app.register_blueprint(book_bp, url_prefix="/api/v1/book")
 app.register_blueprint(category_bp, url_prefix="/api/v1/category")
 app.register_blueprint(user_bp, url_prefix="/api/v1/user")
+app.register_blueprint(comment_bp, url_prefix="/api/v1/comment")
 
 @app.route('/static/<path:filename>')
 def get_pic(filename):
