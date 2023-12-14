@@ -21,7 +21,9 @@ export default function Home() {
       headers: headers,
     })
       .then((response) => {
-        if (!response.ok) console.error(response.status);
+        if (!response.ok) {
+          console.error(response.status);
+        }
         return response.json();
       })
       .then((body) => {
@@ -29,6 +31,7 @@ export default function Home() {
         setLoading(false);
       });
   }, []);
+  console.log("Backend URL:", process.env.BACKEND_URL);
 
   return (
       <div className="h-full flex flex-col border-none p-4 flex-1">
@@ -61,7 +64,7 @@ export default function Home() {
                 title={`${value.title}`}
               >
                 <Image
-                  src={`${process.env.BACKEND_URL}static/${value.image}`}
+                  src={process.env.BACKEND_URL+ `static/${value.image}`}
                   alt={`${value.title}`}
                   title={`${value.title}`}
                   width={500}
