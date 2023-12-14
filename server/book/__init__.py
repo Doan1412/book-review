@@ -49,6 +49,22 @@ def store():
         )
         db.session.add(book)
         db.session.commit()
+        
+        category_id = request.form.get("category_id")  # Đảm bảo bạn có cung cấp category_id trong request
+        
+        # Kiểm tra xem category_id tồn tại trong cơ sở dữ liệu hay không
+        category = Category.query.get(category_id)
+        if not category:
+            db.session.rollback()
+            return respond_with_error(message="Category not found")
+
+        # Thêm thông tin vào bảng trung gian BookCategory
+        book_category = BookCategory(
+            book_id=book.id,
+            category_id=category_id
+        )
+        db.session.add(book_category)
+        db.session.commit()
         return respond()
     except Exception as error:
         db.session.rollback()
@@ -120,7 +136,10 @@ def show(id):
             }
             comment_list.append(comment_data)
         book_category = BookCategory.query.filter_by(book_id=book.id).first()
-        category = Category.query.filter_by(id = book_category.category_id).first()
+        category = None  # Khởi tạo category là None
+
+        if book_category:
+            category = Category.query.filter_by(id=book_category.category_id).first()
         return respond(
             data={
                 "id": book.id,
@@ -133,8 +152,8 @@ def show(id):
                 "image": book.image,
                 "review": comment_list,
                 "category": {
-                    "id": category.id,
-                    "name": category.name
+                    "id": category.id if category else None,
+                    "name": category.name if category else None
                 }
             }
         )

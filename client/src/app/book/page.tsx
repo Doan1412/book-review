@@ -10,7 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { FiEdit } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
-
+import Rating from "@/components/Rating"
 export default function Detail_book() {
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(true);
