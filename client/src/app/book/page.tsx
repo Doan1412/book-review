@@ -63,7 +63,7 @@ export default function Detail_book() {
             headers.append("Accept", "application/json");
             headers.append("Content-Type", "application/json");
             headers.append("Authorization", getCookie("token") as string);
-            const response = await fetch(process.env.BACKEND_URL +"api/v1/book/" , {
+            const response = await fetch(process.env.BACKEND_URL + "api/v1/book" + id, {
                 method: "DELETE",
                 headers: headers,
               });
@@ -83,61 +83,89 @@ export default function Detail_book() {
             console.error("Error:", error);
         }
     };
-    const handleDeleteComment = (indexToRemove : number) => {
-        console.log(indexToRemove);
-        const headers = new Headers();
-        headers.append("Accept", "application/json");
-        headers.append("Content-Type", "application/json");
-        headers.append("token", getCookie("token") as string);
-        fetch(process.env.BACKEND_URL + `/api/review`, {
-          method: "DELETE",
-          headers: headers,
-          body: JSON.stringify({
-            review_id: indexToRemove,
-          }),
-        }).then((response) => {
-          if (!response.ok) {
-            console.error(response.status);
-          } else getComments(1, 10);
-          return;
-        });
-        return;
-      };
-      const handleEditComment = (commentId: number) => {
-        setEditCommentId(commentId);
-        setEditedComment(comments.find(comment => comment.id === commentId).comment.toString());
-      };
-      const handleSaveEdit = async (commentId : number, newComment : string, star: number) => {
-        const headers = new Headers();
-        headers.append("Accept", "application/json");
-        headers.append("Content-Type", "application/json");
-        headers.append("token", getCookie("token") as string);
-        fetch("http://127.0.0.1:8082" + `/api/review`, {
-          method: "PUT",
-          headers: headers,
-          body: JSON.stringify({
-            review_id : commentId,
-            star : star,
-            comment : newComment
-          }),
-        }).then((response) => {
-          if (!response.ok) {
-            console.error(response.status);
-          } else {
-            getComments(1, 10);
-          }
-          setEditCommentId(null);
-          return;
-        });
-        setEditCommentId(null);
-        return;
-      };
+    // const handleDeleteComment = (indexToRemove : number) => {
+    //     console.log(indexToRemove);
+    //     const headers = new Headers();
+    //     headers.append("Accept", "application/json");
+    //     headers.append("Content-Type", "application/json");
+    //     headers.append("token", getCookie("token") as string);
+    //     fetch(process.env.BACKEND_URL + `/api/review`, {
+    //       method: "DELETE",
+    //       headers: headers,
+    //       body: JSON.stringify({
+    //         review_id: indexToRemove,
+    //       }),
+    //     }).then((response) => {
+    //       if (!response.ok) {
+    //         console.error(response.status);
+    //       } else getComments(1, 10);
+    //       return;
+    //     });
+    //     return;
+    //   };
+    //   const handleEditComment = (commentId: number) => {
+    //     setEditCommentId(commentId);
+    //     setEditedComment(comments.find(comment => comment.id === commentId).comment.toString());
+    //   };
+    //   const handleSaveEdit = async (commentId : number, newComment : string, star: number) => {
+    //     const headers = new Headers();
+    //     headers.append("Accept", "application/json");
+    //     headers.append("Content-Type", "application/json");
+    //     headers.append("token", getCookie("token") as string);
+    //     fetch("http://127.0.0.1:8082" + `/api/review`, {
+    //       method: "PUT",
+    //       headers: headers,
+    //       body: JSON.stringify({
+    //         review_id : commentId,
+    //         star : star,
+    //         comment : newComment
+    //       }),
+    //     }).then((response) => {
+    //       if (!response.ok) {
+    //         console.error(response.status);
+    //       } else {
+    //         getComments(1, 10);
+    //       }
+    //       setEditCommentId(null);
+    //       return;
+    //     });
+    //     setEditCommentId(null);
+    //     return;
+    //   };
     
       const handleCancelEdit = () => {
         setEditCommentId(null); // Hủy chế độ chỉnh sửa
         // Đặt lại nội dung chỉnh sửa về rỗng để không giữ lại dữ liệu đã chỉnh sửa
         setEditedComment('');
     };
+
+    const postComment = async () => {
+        try {
+            const headers = new Headers();
+            headers.append("Accept", "application/json");
+            headers.append("Content-Type", "application/json");
+            headers.append("Authorization", getCookie("token") as string);
+            const response = await fetch(process.env.BACKEND_URL +"api/v1/comment/", {
+                method: "POST",
+                headers: headers,
+              });
+
+            if (!response.ok) {
+            throw new Error("Failed to fetch data");
+            }
+            const data = await response.json();
+            if (data.success === true) {
+                router.push("/");
+            } else {
+                const message = Translate("VI", data.msg);
+                setNoti(message);
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
+
     if (!book) {
         return (
             <div className="w-full h-full flex items-center justify-center">
