@@ -1,6 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
-import { usePathname, useSearchParams } from 'next/navigation'
+import { usePathname, useSearchParams, useRouter } from 'next/navigation';
 import { Book } from "@/model/Book";
 import { useEffect, useState } from "react";
 import { getCookie, hasCookie } from "cookies-next";
@@ -13,6 +12,10 @@ import { FiEdit } from "react-icons/fi";
 import { AiOutlineDelete } from "react-icons/ai";
 import Rating from "@/components/Rating";
 import { BsSend } from "react-icons/bs";
+import Translate from "@/language/translate";
+import Popup from "@/components/Popup";
+
+
 export default function Detail_book() {
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(true);
@@ -21,6 +24,8 @@ export default function Detail_book() {
     const id = searchParams.get('id');
     const [rating, setRating] = useState<number>(0);
     const [comment, setComment] = useState<string>("");
+    const [noti, setNoti] = useState<string | null>(null);
+
     useEffect(() => {
         async function fetchBook() {
             if (!hasCookie("token")) {
@@ -48,7 +53,34 @@ export default function Detail_book() {
             }
         }
         fetchBook();
-    }, [id,router]);
+    }, [id, router]);
+    
+    const deleteBook = async () => {
+        try {
+            const headers = new Headers();
+            headers.append("Accept", "application/json");
+            headers.append("Content-Type", "application/json");
+            headers.append("Authorization", getCookie("token") as string);
+            const response = await fetch(process.env.BACKEND_URL +"api/v1/auth/", {
+                method: "DELETE",
+                headers: headers,
+              });
+
+            if (!response.ok) {
+            throw new Error("Failed to fetch data");
+            }
+            const data = await response.json();
+            if (data.success === true) {
+                router.push("/");
+            } else {
+                const message = Translate("VI", data.msg);
+                setNoti(message);
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
 
     if (!book) {
         return (
@@ -61,6 +93,7 @@ export default function Detail_book() {
             <div className="h-full flex flex-row">
                 <Navigation />
                 <div className="flex-1 overflow-auto">
+                {noti && <Popup message={noti} close={() => setNoti(null)} />}
                     <div className="p-6">
                         <div className="w-full bg-[#f0eee3] flex flex-row items-center justify-center space-x-16">
                             {book &&
