@@ -162,6 +162,12 @@ export default function Detail_book() {
         setEditCommentId(-1);
         return;
       };
+
+    const handleCancelEdit = () => {
+        setEditCommentId(-1); // Hủy chế độ chỉnh sửa
+        // Đặt lại nội dung chỉnh sửa về rỗng để không giữ lại dữ liệu đã chỉnh sửa
+        setEditedComment('');
+    };
     const postComment = async () => {
         try {
             const headers = new Headers();
@@ -189,7 +195,7 @@ export default function Detail_book() {
         }
     };
 
-    if (!book) {
+    if (!book || loading) {
         return (
             <div className="w-full h-full flex items-center justify-center">
                 <Spinner />
@@ -342,7 +348,7 @@ export default function Detail_book() {
                                                 >
                                                     <div className="flex flex-row justify-between">
                                                         <span className="font-bold">
-                                                            {value.username}
+                                                            {value.fullname}
                                                         </span>
                                                         <span className="italic">
                                                             {value.create_at}

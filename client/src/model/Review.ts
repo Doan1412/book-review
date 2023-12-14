@@ -6,5 +6,6 @@ export interface Review {
     username: String;
     name : String;
     updated_at: String;
+    fullname: String;
   }
   

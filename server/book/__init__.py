@@ -122,17 +122,20 @@ def show(id):
         for comment in comments.items:
             user_of_comment = User.query.filter_by(id=comment.user_id).first()
             if user_of_comment:
+                username = user_of_comment.username
                 user_full_name = f"{user_of_comment.first_name} {user_of_comment.last_name}"
             else:
+                username = "Unknown"
                 user_full_name = "Unknown"
 
             comment_data = {
                 'id': comment.id,
-                'username': user_full_name,
+                'fullname': user_full_name,
                 'content': comment.content,
                 'star': comment.star,
                 'created_at': comment.created_at,
                 'updated_at': comment.updated_at,
+                'username' : username, 
             }
             comment_list.append(comment_data)
         book_categories = BookCategory.query.filter_by(book_id=book.id).all()
