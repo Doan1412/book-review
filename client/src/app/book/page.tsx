@@ -14,7 +14,7 @@ import Rating from "@/components/Rating";
 import { BsSend } from "react-icons/bs";
 import Translate from "@/language/translate";
 import Popup from "@/components/Popup";
-
+import { Review } from '@/model/Review';
 
 export default function Detail_book() {
     const router = useRouter();
@@ -25,9 +25,10 @@ export default function Detail_book() {
     const [rating, setRating] = useState<number>(0);
     const [comment, setComment] = useState<string>("");
     const [noti, setNoti] = useState<string | null>(null);
-    const [editCommentId, setEditCommentId] = useState(null);
+    const [editCommentId, setEditCommentId] = useState<number>(-1);
     const [editedComment, setEditedComment] = useState('');
-
+    const [comments, setComments] = useState<Review[] | null>(null);
+    
     useEffect(() => {
         async function fetchBook() {
             if (!hasCookie("token")) {
@@ -45,6 +46,7 @@ export default function Detail_book() {
 
                 if (data.success === true) {
                     setBook(data.data);
+                    setComments(data.data.reviews)
                     setLoading(false);
                 } else {
                     console.log(data.error);
@@ -56,7 +58,26 @@ export default function Detail_book() {
         }
         fetchBook();
     }, [id, router]);
-    
+    const getComments = () => {
+        const headers = new Headers();
+        headers.append("Accept", "application/json");
+        headers.append("Content-Type", "application/json");
+        fetch(
+            process.env.BACKEND_URL +
+            `/api/comment/book/${book?.id}`,
+          {
+            method: "GET",
+            headers: headers,
+          }
+        )
+          .then((response) => {
+            if (!response.ok) console.error(response.status);
+            return response.json();
+          })
+          .then((body) => {
+            setComments(body.reviews as Review[]);
+          });
+      };
     const deleteBook = async () => {
         try {
             const headers = new Headers();
@@ -98,21 +119,30 @@ export default function Detail_book() {
         }).then((response) => {
           if (!response.ok) {
             console.error(response.status);
-          } else getComments(1, 10);
+          } else getComments();
           return;
         });
         return;
       };
       const handleEditComment = (commentId: number) => {
         setEditCommentId(commentId);
-        setEditedComment(comments.find(comment => comment.id === commentId).comment.toString());
+        if (comments) {
+            const foundComment = comments.find(comment => comment.id === commentId);
+            if (foundComment) {
+              setEditedComment(foundComment.content.toString());
+            } else {
+              console.error(`Không tìm thấy comment với id: ${commentId}`);
+            }
+          } else {
+            console.error('Không có danh sách comment');
+        }
       };
       const handleSaveEdit = async (commentId : number, newComment : string, star: number) => {
         const headers = new Headers();
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
         headers.append("token", getCookie("token") as string);
-        fetch("http://127.0.0.1:8082" + `/api/review`, {
+        fetch(process.env.BACKEND_URL + `/api/review`, {
           method: "PUT",
           headers: headers,
           body: JSON.stringify({
@@ -124,17 +154,17 @@ export default function Detail_book() {
           if (!response.ok) {
             console.error(response.status);
           } else {
-            getComments(1, 10);
+            getComments();
           }
-          setEditCommentId(null);
+          setEditCommentId(-1);
           return;
         });
-        setEditCommentId(null);
+        setEditCommentId(-1);
         return;
       };
     
       const handleCancelEdit = () => {
-        setEditCommentId(null); // Hủy chế độ chỉnh sửa
+        setEditCommentId(-1); // Hủy chế độ chỉnh sửa
         // Đặt lại nội dung chỉnh sửa về rỗng để không giữ lại dữ liệu đã chỉnh sửa
         setEditedComment('');
     };
@@ -284,7 +314,7 @@ export default function Detail_book() {
                                         </div>
 
                                         <div className="space-y-2">
-                                            {book.reviews?.map((value, index) => (
+                                            {comments?.map((value, index) => (
                                                 <div
                                                     key={index}
                                                     className="flex flex-col bg-[#f0eee3] px-3 py-2 rounded-xl"
@@ -346,7 +376,7 @@ export default function Detail_book() {
                                                                 <div>
                                                                     <span>
                                                                         {
-                                                                            value.comment
+                                                                            value.content
                                                                         }
                                                                     </span>
                                                                     <Rating
