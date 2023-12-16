@@ -85,7 +85,7 @@ export default function Detail_book() {
             headers.append("Content-Type", "application/json");
             headers.append("Authorization", getCookie("token") as string);
             const response = await fetch(
-                process.env.BACKEND_URL + "api/v1/book" + id,
+                process.env.BACKEND_URL + "api/v1/book/" + id,
                 {
                     method: "DELETE",
                     headers: headers,

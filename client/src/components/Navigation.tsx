@@ -37,6 +37,8 @@ export default function Navigation() {
             <button
               onClick={() => {
                 deleteCookie("token");
+                deleteCookie("username");
+                deleteCookie("role");
                 setToken(null);
               }}
               className="iconButton"

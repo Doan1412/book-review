@@ -72,7 +72,7 @@ export default function Profile() {
                                 </div>
                                 <div className="mb-4">
                                     <p className="text-gray-700 font-bold">Role:</p>
-                                    <p className="text-gray-900">{user.role === '0' ? 'Admin' : 'User'}</p>
+                                    <p className="text-gray-900">{user.role === '0' ? 'User' : 'Admin'}</p>
                                 </div>
                                 <div className="mb-4">
                                     <p className="text-gray-700 font-bold">Created At:</p>

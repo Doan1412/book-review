@@ -50,22 +50,21 @@ def store():
         db.session.add(book)
         db.session.commit()
         
-        category_id = request.form.get("category_id")  # Đảm bảo bạn có cung cấp category_id trong request
-        
-        # Kiểm tra xem category_id tồn tại trong cơ sở dữ liệu hay không
-        category = Category.query.get(category_id)
-        if not category:
-            db.session.rollback()
-            return respond_with_error(message="Category not found")
+        # category_ids = request.form.getlist("category_ids")  
 
-        # Thêm thông tin vào bảng trung gian BookCategory
-        book_category = BookCategory(
-            book_id=book.id,
-            category_id=category_id
-        )
-        db.session.add(book_category)
+        # for category_id in category_ids:
+        #     category = Category.query.get(category_id)
+        #     if not category:
+        #         db.session.rollback()
+        #         return respond_with_error(message=f"Category with ID {category_id} not found")
+
+        #     book_category = BookCategory(
+        #         book_id=book.id,
+        #         category_id=category_id
+        #     )
+        #     db.session.add(book_category)
+
         db.session.commit()
-        return respond()
     except Exception as error:
         db.session.rollback()
         return respond_with_error(error=str(error))
@@ -177,20 +176,37 @@ def update(id):
         if (not user) or (user.role == 0):
             return respond_with_error()
         # Save image
-        file = request.files["image"]
-        if file.filename == "" or not allowed_file(file.filename):
-            return respond_with_error()
-        file_name = "{}.jpg".format(uuid4())
-        folder_path = os.path.join(os.getcwd(), "static")
-        if not os.path.isdir(folder_path):
-            os.mkdir(folder_path)
-        file.save(os.path.join(folder_path, file_name))
+        if "image" in request.files :
+            file = request.files["image"]
+            if file.filename == "" or not allowed_file(file.filename):
+                return respond_with_error()
+            file_name = "{}.jpg".format(uuid4())
+            folder_path = os.path.join(os.getcwd(), "static")
+            if not os.path.isdir(folder_path):
+                os.mkdir(folder_path)
+            file.save(os.path.join(folder_path, file_name))
+            book.image = file_name
 
+        updated_category_ids = request.form.getlist("category_ids")
+
+        BookCategory.query.filter_by(book_id=book.id).delete()
+
+        for category_id in updated_category_ids:
+            category = Category.query.get(category_id)
+            if not category:
+                db.session.rollback()
+                return respond_with_error(message=f"Category with ID {category_id} not found")
+
+            book_category = BookCategory(
+                book_id=book.id,
+                category_id=category_id
+            )
+            db.session.add(book_category)
+            
         book.author = request.form.get("author")
         book.title = request.form.get("title")
         book.price = request.form.get("price")
         book.description = request.form.get("description")
-        book.image = file_name
         db.session.add(book)
         db.session.commit()
         return respond()
