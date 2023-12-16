@@ -1,5 +1,5 @@
 "use client";
-import { usePathname, useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Book } from "@/model/Book";
 import { useEffect, useState } from "react";
 import { getCookie, hasCookie } from "cookies-next";
