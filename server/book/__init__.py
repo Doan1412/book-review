@@ -50,19 +50,19 @@ def store():
         db.session.add(book)
         db.session.commit()
         
-        # category_ids = request.form.getlist("category_ids")  
+        category_ids = request.form.getlist("category_ids")  
 
-        # for category_id in category_ids:
-        #     category = Category.query.get(category_id)
-        #     if not category:
-        #         db.session.rollback()
-        #         return respond_with_error(message=f"Category with ID {category_id} not found")
+        for category_id in category_ids:
+            category = Category.query.get(category_id)
+            if not category:
+                db.session.rollback()
+                return respond_with_error(message=f"Category with ID {category_id} not found")
 
-        #     book_category = BookCategory(
-        #         book_id=book.id,
-        #         category_id=category_id
-        #     )
-        #     db.session.add(book_category)
+            book_category = BookCategory(
+                book_id=book.id,
+                category_id=category_id
+            )
+            db.session.add(book_category)
 
         db.session.commit()
     except Exception as error:
