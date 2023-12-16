@@ -9,9 +9,11 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import Popup from "@/components/Popup";
-import { Select, Spinner } from "@nextui-org/react";
+import { Spinner } from "@nextui-org/react";
 import { FiUploadCloud } from "react-icons/fi";
 import { Category } from "@/model/Category";
+import { List } from "postcss/lib/list";
+import Select from 'react-select';
 
 export default function Edit() {
     const router = useRouter();
@@ -23,6 +25,7 @@ export default function Edit() {
     const [title, setTitle] = useState<string>("");
     const [price, setPrice] = useState<number>(0);
     const [description, setDescription] = useState<string>("");
+    const [bookCategories, setBookCategories] = useState<Category[]>([]);
     const [book, setBook] = useState<Book>();
     const [image, setImage] = useState<File | null>(null);
     const [createObjectURL, setCreateObjectURL] = useState<string>();
@@ -60,10 +63,11 @@ export default function Edit() {
                     setTitle(fetchedBook.title);
                     setDescription(fetchedBook.description);
                     setPrice(fetchedBook.price);
+                    setBookCategories(fetchedBook.categories);
                     const selectedcategories = fetchedBook.categories.map((bookCategory) => ({
-                        value: bookCategory.id,
-                        label: bookCategory.name,
-                      }));
+                      value: bookCategory.id,
+                      label: bookCategory.name,
+                    }));
                     setSelectedOptions(selectedcategories);
                     setCreateObjectURL(
                         process.env.BACKEND_URL + `static/` + fetchedBook.image
@@ -107,9 +111,10 @@ export default function Edit() {
         value: category.id,
         label: category.name,
       }));
-      const handleSelectChange = (selected) => {
+  
+    const handleSelectChange = (selected) => {
         setSelectedOptions(selected);
-      };
+    };
     const handleForm = async (event: React.SyntheticEvent) => {
         event.preventDefault();
         setError(null);
@@ -249,7 +254,22 @@ export default function Edit() {
                                         className="inputField w-96"
                                     />
                                 </div>
-
+                                <div className="inputWrap">
+                                  <label
+                                      htmlFor="description"
+                                      className="inputLabel"
+                                  >
+                                      <span>Danh mục hình ảnh</span>
+                                      <span className="text-red-500">*</span>
+                                  </label>
+                                  <Select
+                                    options={categoryOptions}
+                                    isMulti
+                                    onChange={handleSelectChange}
+                                    value={selectedOptions}
+                                    className="inputField w-96"
+                                  />
+                            </div>
                                 <div className="inputWrap">
                                     <label
                                         htmlFor="description"
