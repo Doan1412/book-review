@@ -13,7 +13,7 @@ import { Select, Spinner } from "@nextui-org/react";
 import { FiUploadCloud } from "react-icons/fi";
 import { Category } from "@/model/Category";
 
-export default function Register() {
+export default function Edit() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [loading, setLoading] = useState<boolean>(false);
@@ -28,7 +28,7 @@ export default function Register() {
     const [createObjectURL, setCreateObjectURL] = useState<string>();
     const [categories, setCategories] = useState<Category[]| null>(null);
     const [noti, setNoti] = useState<string | null>(null);
-    const [selectedCategories, setSelectedCategories] = useState<Category[]| null>(null);
+    const [selectedOptions, setSelectedOptions] = useState([]);
     const uploadToClient = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const i = event.target.files[0];
@@ -60,6 +60,11 @@ export default function Register() {
                     setTitle(fetchedBook.title);
                     setDescription(fetchedBook.description);
                     setPrice(fetchedBook.price);
+                    const selectedcategories = fetchedBook.categories.map((bookCategory) => ({
+                        value: bookCategory.id,
+                        label: bookCategory.name,
+                      }));
+                    setSelectedOptions(selectedcategories);
                     setCreateObjectURL(
                         process.env.BACKEND_URL + `static/` + fetchedBook.image
                     );
@@ -98,7 +103,13 @@ export default function Register() {
         }
         fetchCategories();
     }, [id, router]);
-
+    const categoryOptions = categories.map((category) => ({
+        value: category.id,
+        label: category.name,
+      }));
+      const handleSelectChange = (selected) => {
+        setSelectedOptions(selected);
+      };
     const handleForm = async (event: React.SyntheticEvent) => {
         event.preventDefault();
         setError(null);
