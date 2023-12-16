@@ -100,6 +100,7 @@ export default function Detail_book() {
                 router.push("/");
                 setNoti("Xóa sách thành công");
             } else {
+                setNoti("Xóa ko thành công");
                 console.log("Failed to delete");
             }
         } catch (error) {

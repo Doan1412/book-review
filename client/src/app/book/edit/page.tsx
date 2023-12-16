@@ -9,8 +9,9 @@ import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import Navigation from "@/components/Navigation";
 import Popup from "@/components/Popup";
-import { Spinner } from "@nextui-org/react";
+import { Select, Spinner } from "@nextui-org/react";
 import { FiUploadCloud } from "react-icons/fi";
+import { Category } from "@/model/Category";
 
 export default function Register() {
     const router = useRouter();
@@ -25,8 +26,9 @@ export default function Register() {
     const [book, setBook] = useState<Book>();
     const [image, setImage] = useState<File | null>(null);
     const [createObjectURL, setCreateObjectURL] = useState<string>();
-    const [category, setCategory] = useState<string>("");
+    const [categories, setCategories] = useState<Category[]| null>(null);
     const [noti, setNoti] = useState<string | null>(null);
+    const [selectedCategories, setSelectedCategories] = useState<Category[]| null>(null);
     const uploadToClient = (event: ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const i = event.target.files[0];
@@ -71,9 +73,33 @@ export default function Register() {
             }
         }
         fetchBook();
+        async function fetchCategories() {
+            try{
+              const headers = new Headers();
+              headers.append("Accept", "application/json");
+              headers.append("Content-Type", "application/json");
+              fetch(process.env.BACKEND_URL + "/api/v1/category", {
+                method: "GET",
+                headers: headers,
+              })
+                .then((response) => {
+                  if (!response.ok) {
+                    console.error(response.status);
+                  }
+                  return response.json();
+                })
+                .then((body) => {
+                  setCategories(body.data.categories as Category[]);
+                  setLoading(false);
+                });
+                } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+        fetchCategories();
     }, [id, router]);
 
-    const handleForm = (event: React.SyntheticEvent) => {
+    const handleForm = async (event: React.SyntheticEvent) => {
         event.preventDefault();
         setError(null);
         setLoading(true);
@@ -99,18 +125,22 @@ export default function Register() {
         body.append("title", title);
         body.append("description", description);
         body.append("price", price.toString());
-        fetch(process.env.BACKEND_URL + "api/v1/book/" + id, {
+        const response = await fetch(process.env.BACKEND_URL + "api/v1/book/" + id, {
             method: "POST",
             headers: headers,
             body: body,
-        }).then((resp) => {
-            if (!resp.ok) console.error(resp.status);
-            return resp.json();
         });
-        // .then(() => {
-        //   setLoading(false);
-        //   router.push("/login");
-        // });
+        if (!response.ok) {
+            throw new Error("Failed to fetch data");
+        }
+        const data = await response.json();
+        if (data.success === true) {
+            setNoti("Cập nhật sách thành công");
+            router.push("/");
+        } else {
+            setNoti("Cập nhật không thành công");
+            console.log("Failed to delete");
+        }
     };
     return (
         <div className="h-full flex flex-row">
@@ -229,7 +259,7 @@ export default function Register() {
                                         className="inputField w-96"
                                     />
                                 </div>
-                                <div>
+                                <div className="inputWrap w-96">
                                     <label
                                         htmlFor="description"
                                         className="inputLabel"
@@ -253,12 +283,15 @@ export default function Register() {
                                             )}
                                         </div>
                                     )}
-                                    <div className="input-group">
+                                    <div >
                                         <label
                                             htmlFor="image"
                                             className="flex items-center justify-center w-32 h-10 bg-[#c7c4bd] text-white rounded-lg shadow-md cursor-pointer hover:bg-opacity-80"
                                         >
-                                            <FiUploadCloud />
+                                            <FiUploadCloud
+                                                size={25}
+                                                color="black"
+                                            />
                                             <input
                                                 onChange={uploadToClient}
                                                 type="file"
