@@ -106,6 +106,7 @@ def delete_comment(comment_id):
 
         if comment:
             comment.deleted_at = datetime.now()
+            session.delete(comment)
             session.commit()
             session.close()
 
