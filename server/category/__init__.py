@@ -6,6 +6,7 @@ from sqlalchemy import asc
 
 from model.Category import Category
 from model.User import User
+from server.model.BookCategory import BookCategory
 from utils import get_db, respond, respond_with_error, valid_request
 
 category_bp = Blueprint("category", __name__)
@@ -76,6 +77,10 @@ def destroy(id):
             return respond_with_error()
         category.deleted_at = datetime.now()
         db.session.add(category)
+        db.delete(category)
+        book_categories = BookCategory.query.filter(BookCategory.category_id == id).all()
+        for category in book_categories:
+            db.session.delete(category)
         db.session.commit()
         return respond()
     except Exception as error:

@@ -279,10 +279,14 @@ def destroy(id):
         if (not user) or (user.role == 0):
             return respond_with_error()
         book = Book.query.filter_by(deleted_at=None).filter(Book.id == id).first()
+        book_categories = BookCategory.query.filter(book.id == id).all()
+        for category in book_categories:
+            db.session.delete(category)
         if not book:
             return respond_with_error()
         book.deleted_at = datetime.now()
         db.session.add(book)
+        db.session.delete(book)
         db.session.commit()
         return respond()
     except Exception as error:
