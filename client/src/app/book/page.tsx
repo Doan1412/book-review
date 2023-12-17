@@ -121,7 +121,7 @@ export default function Detail_book() {
                 console.error(response.status);
             } else {
                 getComments();
-                setNoti("Xóa comment thành công")
+                setNoti("Xóa comment thành công");
             }
             return;
         });
@@ -151,7 +151,7 @@ export default function Detail_book() {
         headers.append("Accept", "application/json");
         headers.append("Content-Type", "application/json");
         headers.append("Authorization", getCookie("token") as string);
-        fetch(process.env.BACKEND_URL + `api/v1/comment/`+commentId, {
+        fetch(process.env.BACKEND_URL + `api/v1/comment/` + commentId, {
             method: "PUT",
             headers: headers,
             body: JSON.stringify({
@@ -167,19 +167,19 @@ export default function Detail_book() {
             setEditCommentId("");
             return;
         });
-        setEditCommentId('');
+        setEditCommentId("");
         return;
     };
 
     const handleCancelEdit = () => {
-        setEditCommentId(''); // Hủy chế độ chỉnh sửa
+        setEditCommentId(""); // Hủy chế độ chỉnh sửa
         // Đặt lại nội dung chỉnh sửa về rỗng để không giữ lại dữ liệu đã chỉnh sửa
         setEditedComment("");
     };
     const postComment = async () => {
         setComment(comment.trim());
         if (comment === "" || 0 > rating || 5 < rating || !book) {
-        return;
+            return;
         }
         try {
             const headers = new Headers();
@@ -194,7 +194,7 @@ export default function Detail_book() {
                     body: JSON.stringify({
                         star: rating,
                         content: comment,
-                        book_id: book.id
+                        book_id: book.id,
                     }),
                 }
             );
@@ -258,24 +258,22 @@ export default function Detail_book() {
                         </div>
 
                         <div className="bg-[#fdfcf8] w-full rounded-xl -mt-12">
-                            {
-                                role === "1" && (
-                                    <div className="flex flex-row justify-end items-center px-6 pt-4 space-x-4">
-                                        <Button className="iconButton">
-                                            <Link href={`/book/edit?id=${book.id}`}>
-                                                <FiEdit size={20} />
-                                            </Link>
-                                        </Button>
+                            {role === "1" && (
+                                <div className="flex flex-row justify-end items-center px-6 pt-4 space-x-4">
+                                    <Button className="iconButton">
+                                        <Link href={`/book/edit?id=${book.id}`}>
+                                            <FiEdit size={20} />
+                                        </Link>
+                                    </Button>
 
-                                        <Button
-                                            onClick={deleteBook}
-                                            className="iconButton"
-                                        >
-                                            <AiOutlineDelete size={20} />
-                                        </Button>
-                                    </div>
-                                )
-                            }
+                                    <Button
+                                        onClick={deleteBook}
+                                        className="iconButton"
+                                    >
+                                        <AiOutlineDelete size={20} />
+                                    </Button>
+                                </div>
+                            )}
 
                             <div className="flex flex-row space-x-10 overflow-auto px-6 py-4">
                                 <div className="flex-1 space-y-2">
@@ -321,12 +319,14 @@ export default function Detail_book() {
                                             {book.categories?.map(
                                                 (value, index) => {
                                                     return (
-                                                        <div
-                                                            key={index}
-                                                            className="px-3 py-2 bg-[#c7c4bd] rounded-full"
-                                                        >
-                                                            {value.name}
-                                                        </div>
+                                                        <Link href={"/category?id="+value.id}>
+                                                            <div
+                                                                key={index}
+                                                                className="px-3 py-2 bg-[#c7c4bd] rounded-full"
+                                                            >
+                                                                {value.name}
+                                                            </div>
+                                                        </Link>
                                                     );
                                                 }
                                             )}

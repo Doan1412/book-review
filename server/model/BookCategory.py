@@ -15,7 +15,7 @@ class BookCategory(db.Model):
     def __repr__(self) -> str:
         return f"<BookCategory {self.id}>"
 
-    def __init__(self, book_id: str, category_id: str, name: str) -> None:
+    def __init__(self, book_id: str, category_id: str) -> None:
         self.id = unique_id()
         self.created_at = datetime.now()
         self.updated_at = None

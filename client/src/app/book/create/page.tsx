@@ -25,7 +25,6 @@ export default function Edit() {
     const [title, setTitle] = useState<string>("");
     const [price, setPrice] = useState<number>(0);
     const [description, setDescription] = useState<string>("");
-    const [bookCategories, setBookCategories] = useState<Category[]>([]);
     const [book, setBook] = useState<Book>();
     const [image, setImage] = useState<File | null>(null);
     const [createObjectURL, setCreateObjectURL] = useState<string>();
@@ -41,50 +40,12 @@ export default function Edit() {
     };
 
     useEffect(() => {
-        async function fetchBook() {
+        async function fetchCategories() {
             if (!hasCookie("token")) {
                 router.push("/login");
                 return;
             }
-            if (!id) {
-                router.push("/");
-                return;
-            }
             setLoading(true);
-            // const token = getCookie("token")?.toString();
-            try {
-                const response = await http.get("api/v1/book/" + id);
-                const data = await response.data;
-
-                if (data.success === true) {
-                    const fetchedBook = data.data;
-                    setBook(fetchedBook);
-                    setAuthor(fetchedBook.author);
-                    setTitle(fetchedBook.title);
-                    setDescription(fetchedBook.description);
-                    setPrice(fetchedBook.price);
-                    setBookCategories(fetchedBook.categories);
-                    const selectedcategories = fetchedBook.categories.map(
-                        (bookCategory: any) => ({
-                            value: bookCategory.id,
-                            label: bookCategory.name,
-                        })
-                    );
-                    setSelectedOptions(selectedcategories);
-                    setCreateObjectURL(
-                        process.env.BACKEND_URL + `static/` + fetchedBook.image
-                    );
-                    setLoading(false);
-                } else {
-                    console.log(data.error);
-                    router.push("/");
-                }
-            } catch (error) {
-                console.error("Error:", error);
-            }
-        }
-        fetchBook();
-        async function fetchCategories() {
             try {
                 const headers = new Headers();
                 headers.append("Accept", "application/json");
@@ -108,13 +69,16 @@ export default function Edit() {
             }
         }
         fetchCategories();
-    }, [id, router]);
+    }, [router]);
     const categoryOptions = categories?.map((category) => ({
         value: category.id,
         label: category.name,
     }));
 
     const handleSelectChange = (selected: any) => {
+        const selectedCategoryIds = selected.map((category: any) => category.value);
+        // Làm bất cứ điều gì bạn muốn với danh sách ID này
+        console.log(selectedCategoryIds);
         setSelectedOptions(selected);
     };
     const handleForm = async (event: React.SyntheticEvent) => {
@@ -122,8 +86,6 @@ export default function Edit() {
         setError(null);
         setLoading(true);
         if (
-            !id ||
-            id.trim() === "" ||
             author.trim() === "" ||
             title.trim() === "" ||
             description.trim() === ""
@@ -147,7 +109,7 @@ export default function Edit() {
             body.append("category_ids", category.value);
         });
         const response = await fetch(
-            process.env.BACKEND_URL + "api/v1/book/" + id,
+            process.env.BACKEND_URL + "api/v1/book" ,
             {
                 method: "POST",
                 headers: headers,
@@ -159,10 +121,10 @@ export default function Edit() {
         }
         const data = await response.json();
         if (data.success === true) {
-            setNoti("Cập nhật sách thành công");
+            setNoti("Thêm sách thành công");
             router.push("/");
         } else {
-            setNoti("Cập nhật không thành công");
+            setNoti("Thêm sách không thành công");
             console.log("Failed to delete");
         }
     };
@@ -176,7 +138,6 @@ export default function Edit() {
                     </div>
                 )}
                 {noti && <Popup message={noti} close={() => setNoti(null)} />}
-                {book && (
                     <div className="p-6">
                         <div className="flex flex-col items-center justify-center flex-1 space-y-6">
                             <form
@@ -187,19 +148,6 @@ export default function Edit() {
                                 <h3 className="text-center uppercase font-bold text-2xl mb-4">
                                     Cập nhật sách
                                 </h3>
-
-                                <div className="inputWrap">
-                                    <label htmlFor="id" className="inputLabel">
-                                        <span>ID</span>
-                                        <span className="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        defaultValue={id ?? ""}
-                                        readOnly
-                                        className="inputField w-96"
-                                    />
-                                </div>
 
                                 <div className="inputWrap">
                                     <label
@@ -307,11 +255,10 @@ export default function Edit() {
                                         <span>Ảnh</span>
                                         <span className="text-red-500">*</span>
                                     </label>
-                                    {book && book.image && (
                                         <div>
                                             {createObjectURL ? (
                                                 <Image
-                                                    alt={`Bìa sách ${book.title}`}
+                                                    alt={`Bìa sách`}
                                                     src={createObjectURL} // Ensure createObjectURL is a valid URL string
                                                     width={250}
                                                     height={250}
@@ -322,7 +269,6 @@ export default function Edit() {
                                                 <p>No image available</p>
                                             )}
                                         </div>
-                                    )}
                                     <div>
                                         <label
                                             htmlFor="image"
@@ -353,7 +299,7 @@ export default function Edit() {
                                 </div>
 
                                 <Button type="submit" loading={loading}>
-                                    Cập nhật
+                                    Thêm sách
                                 </Button>
                             </form>
 
@@ -367,7 +313,6 @@ export default function Edit() {
                             </Link>
                         </div>
                     </div>
-                )}
             </div>
         </div>
     );
