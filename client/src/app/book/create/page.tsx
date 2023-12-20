@@ -146,7 +146,7 @@ export default function Edit() {
                                 className="space-y-6 flex flex-col items-center justify-center"
                             >
                                 <h3 className="text-center uppercase font-bold text-2xl mb-4">
-                                    Cập nhật sách
+                                    Tạo sách
                                 </h3>
 
                                 <div className="inputWrap">
