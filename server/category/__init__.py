@@ -6,7 +6,7 @@ from sqlalchemy import asc
 
 from model.Category import Category
 from model.User import User
-from server.model.BookCategory import BookCategory
+from model.BookCategory import BookCategory
 from utils import get_db, respond, respond_with_error, valid_request
 
 category_bp = Blueprint("category", __name__)

@@ -18,6 +18,7 @@ export default function Profile() {
                 router.push("/login");
                 return;
             }
+            setLoading(true);
             try {
                 const headers = new Headers();
                 headers.append("Accept", "application/json");
@@ -54,6 +55,11 @@ export default function Profile() {
         <div className="h-full flex flex-row">
             <Navigation />
             <div className="flex-1 overflow-auto">
+                {loading && (
+                    <div className="h-full flex items-center justify-center">
+                        <Spinner />
+                    </div>
+                )}
                 <div className="p-20">
                     <div className="flex flex-col items-center justify-center mt-20">
                         {user ? (

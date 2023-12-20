@@ -170,12 +170,12 @@ export default function Edit() {
         <div className="h-full flex flex-row">
             <Navigation />
             <div className="flex-1 overflow-auto">
+                {noti && <Popup message={noti} close={() => setNoti(null)} />}
                 {loading && (
                     <div className="h-full flex items-center justify-center">
                         <Spinner />
                     </div>
                 )}
-                {noti && <Popup message={noti} close={() => setNoti(null)} />}
                 {book && (
                     <div className="p-6">
                         <div className="flex flex-col items-center justify-center flex-1 space-y-6">

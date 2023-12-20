@@ -41,6 +41,11 @@ export default function Home() {
             <Navigation />
             <div className="flex-1 overflow-auto">
                 {noti && <Popup message={noti} close={() => setNoti(null)} />}
+                {loading && (
+                    <div className="h-full flex items-center justify-center">
+                        <Spinner />
+                    </div>
+                )}
                 <div className="p-6">
                     <div className="h-full flex flex-col border-none p-4 flex-1">
                         <div className="flex items-center space-x-1">
@@ -54,11 +59,6 @@ export default function Home() {
                         </div>
 
                         <div className="h-full flex flex-wrap gap-6 justify-center flex-1 p-4 overflow-auto">
-                            {loading && (
-                                <div className="h-full flex items-center justify-center">
-                                    <Spinner />
-                                </div>
-                            )}
                             {books?.map((value, index) => {
                                 return (
                                     <Link

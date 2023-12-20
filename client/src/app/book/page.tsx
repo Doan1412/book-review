@@ -41,6 +41,7 @@ export default function Detail_book() {
                 router.push("/");
                 return;
             }
+            setLoading(true);
             // const token = getCookie("token")?.toString();
             try {
                 const response = await http.get("api/v1/book/" + id);
@@ -228,6 +229,11 @@ export default function Detail_book() {
                 <div className="flex-1 overflow-auto">
                     {noti && (
                         <Popup message={noti} close={() => setNoti(null)} />
+                    )}
+                    {loading && (
+                        <div className="h-full flex items-center justify-center">
+                            <Spinner />
+                        </div>
                     )}
                     <div className="p-6">
                         <div className="w-full bg-[#f0eee3] flex flex-row items-center justify-center space-x-16">
