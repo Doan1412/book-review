@@ -15,6 +15,10 @@ import { Category } from "@/model/Category";
 import { List } from "postcss/lib/list";
 import Select from "react-select";
 
+export interface Opion{
+    label : string;
+    value : string;
+}
 export default function Edit() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -143,7 +147,7 @@ export default function Edit() {
         body.append("title", title);
         body.append("description", description);
         body.append("price", price.toString());
-        selectedOptions.forEach((category) => {
+        selectedOptions.forEach((category : Opion) => {
             body.append("category_ids", category.value);
         });
         const response = await fetch(

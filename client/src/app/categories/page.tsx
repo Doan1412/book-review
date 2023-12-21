@@ -22,6 +22,7 @@ import { Table,
   PaginationItemType,
   PaginationItemRenderProps,
   Input,
+  PaginationItemValue,
 } from "@nextui-org/react";
 import useSWR from "swr";
 import classnames from 'classnames';
@@ -111,7 +112,7 @@ export default function Categories() {
     );
   };
 
-  const deleteCategory = async (id) => {
+  const deleteCategory = async (id : string) => {
     try {
         const headers = new Headers();
         headers.append("Accept", "application/json");
@@ -157,6 +158,10 @@ export default function Categories() {
 
   const UpdateCategory = async () => {
     try {
+      if (editingCategoryName == null || editingCategoryName == "") {
+        setNoti("Vui lòng nhập đủ các trường");
+        return;
+      }
       const headers = new Headers();
       headers.append("Accept", "application/json");
       headers.append("Content-Type", "application/json");
@@ -447,7 +452,7 @@ export default function Categories() {
                   <TableColumn style={{ fontWeight: "bold" }}>Tên danh mục</TableColumn>
                   <TableColumn style={{ fontWeight: "bold" }}>Created At</TableColumn>
                   <TableColumn style={{ fontWeight: "bold" }}>Updated At</TableColumn>
-                  <TableColumn style={{ fontWeight: "bold" }}></TableColumn>
+                  <TableColumn style={{ fontWeight: "bold" }}> </TableColumn>
                 </TableHeader>
                 <TableBody
                   loadingContent={<Spinner />}
