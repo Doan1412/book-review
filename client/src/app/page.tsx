@@ -13,6 +13,7 @@ export default function Home() {
     const [loading, setLoading] = useState<boolean>(true);
     const [books, setBooks] = useState<Book[] | null>(null);
     const [noti, setNoti] = useState<string | null>(null);
+    const [searchInput, setSearchInput] = useState("");
 
     useEffect(() => {
         const headers = new Headers();
@@ -34,7 +35,36 @@ export default function Home() {
                 setLoading(false);
             });
     }, []);
-    console.log("Backend URL:", process.env.BACKEND_URL);
+    
+    const handleSearch = () => {
+        setLoading(true);
+        const headers = new Headers();
+        headers.append("Accept", "application/json");
+        headers.append("Content-Type", "application/json");
+        headers.append("Authorization", getCookie("token") as string);
+    
+        const queryParams = new URLSearchParams();
+        if (searchInput) {
+            queryParams.append("author", searchInput);
+            queryParams.append("title", searchInput);
+        }
+    
+        fetch(process.env.BACKEND_URL + "api/v1/book?" + queryParams.toString(), {
+            method: "GET",
+            headers: headers,
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    console.error(response.status);
+                }
+                return response.json();
+            })
+            .then((body) => {
+                setBooks(body.data.books as Book[]);
+                setLoading(false);
+            });
+    };
+    
 
     return (
         <div className="h-full flex flex-row">
@@ -50,11 +80,16 @@ export default function Home() {
                     <div className="h-full flex flex-col border-none p-4 flex-1">
                         <div className="flex items-center space-x-1">
                             <CgSearch size={20} />
-
                             <input
                                 type="text"
-                                placeholder="Tìm sách, tác giả, năm sản xuất, thể loại..."
+                                placeholder="Tìm sách, tác giả..."
                                 className="p-1 bg-[#f0eee3] truncate outline-none flex-1"
+                                onChange={(e) => setSearchInput(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter"){
+                                        handleSearch();
+                                    }
+                                }}
                             />
                         </div>
 

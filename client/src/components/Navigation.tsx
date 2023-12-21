@@ -3,7 +3,7 @@ import { deleteCookie, getCookie, hasCookie } from "cookies-next";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FiLogIn, FiLogOut } from "react-icons/fi";
-import { LuBookPlus } from "react-icons/lu";
+import { LuBookPlus, LuGrid } from "react-icons/lu";
 import { TbHome } from "react-icons/tb";
 import { FaRegUserCircle } from "react-icons/fa";
 
@@ -33,6 +33,14 @@ export default function Navigation() {
             <LuBookPlus size={25} />
           </Link>
 
+          <Link href={"/categories"} className="iconButton">
+            <LuGrid size={25}/>
+          </Link>
+
+          <Link href={"/profile"} className="iconButton">
+            <FaRegUserCircle size={25}/>
+          </Link>
+
           <Link href={"/login"}> {}
             <button
               onClick={() => {
@@ -46,9 +54,7 @@ export default function Navigation() {
               <FiLogOut size={25} />
             </button>
           </Link>
-          <Link href={"/profile"} className="iconButton">
-            <FaRegUserCircle size={25}/>
-          </Link>
+
         </div>
       ) : (
         <Link href={"/login"} className="iconButton">

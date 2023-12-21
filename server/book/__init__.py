@@ -5,6 +5,8 @@ from uuid import uuid4
 
 from flask import Blueprint, request
 from sqlalchemy import asc
+from sqlalchemy import or_
+from sqlalchemy.sql.expression import func
 
 from model.Book import Book
 from model.User import User
@@ -80,12 +82,16 @@ def index():
     author = request.args.get("author", type=str, default="")
     title = request.args.get("title", type=str, default="")
     try:
-        books = Book.query.filter_by(deleted_at=None).order_by(asc(Book.title))
-        # books = Book.query.order_by(asc(Book.title))
-        if author:
-            books = books.filter(Book.author.ilike(f"%{author}%"))  # type: ignore
-        if title:
-            books = books.filter(Book.title.ilike(f"%{title}%"))  # type: ignore
+        # books = Book.query.filter_by(deleted_at=None).order_by(asc(Book.title))
+        books = Book.query.order_by(asc(Book.title))
+        if author or title:
+            search_conditions = []
+            if author:
+                search_conditions.append(func.lower(Book.author.collate('NOCASE')).like(f"%{author.lower()}%"))
+            if title:
+                search_conditions.append(func.lower(Book.title.collate('NOCASE')).like(f"%{title.lower()}%"))
+            books = books.filter(or_(*search_conditions))  
+            print(books)
         total = ceil(books.count() / per_page)
         books = books.paginate(page=page, per_page=per_page)
         return respond(
@@ -166,8 +172,8 @@ def show(id):
     page = request.args.get("page", type=int, default=1)
     per_page = request.args.get("per_page", type=int, default=10)
     try:
-        # book = Book.query.filter_by(deleted_at=None).filter(Book.id == id).first()
-        book = Book.query.filter(Book.id == id).first()
+        book = Book.query.filter_by(deleted_at=None).filter(Book.id == id).first()
+        # book = Book.query.filter(Book.id == id).first()
         if not book:
             return respond_with_error()
         comments = Comment.query.filter(Comment.book_id == id, Comment.deleted_at == None).order_by(Comment.created_at.desc()).paginate(page=page, per_page=per_page)
