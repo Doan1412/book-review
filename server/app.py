@@ -20,4 +20,4 @@ def get_pic(filename):
     return get_pic(filename)
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port=8000, threaded=True)
+    app.run(debug=False, host="0.0.0.0", port=8000, threaded=True)

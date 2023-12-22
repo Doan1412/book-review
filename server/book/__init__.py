@@ -76,8 +76,6 @@ def store():
 
 @book_bp.route("", methods=["GET"])
 def index():
-    page = request.args.get("page", type=int, default=1)
-    per_page = request.args.get("per_page", type=int, default=10)
     # Search params
     author = request.args.get("author", type=str, default="")
     title = request.args.get("title", type=str, default="")
@@ -92,8 +90,7 @@ def index():
                 search_conditions.append(func.lower(Book.title.collate('NOCASE')).like(f"%{title.lower()}%"))
             books = books.filter(or_(*search_conditions))  
             print(books)
-        total = ceil(books.count() / per_page)
-        books = books.paginate(page=page, per_page=per_page)
+        total = ceil(books.count())
         return respond(
             data={
                 "books": [

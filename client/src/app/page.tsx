@@ -113,9 +113,10 @@ export default function Home() {
                                                 }
                                                 alt={`${value.title}`}
                                                 title={`${value.title}`}
-                                                width={500}
-                                                height={500}
-                                                className="w-auto object-cover"
+                                                width = {500}
+                                                height={100}
+                                                className="w-auto object-cover "
+                                                objectFit='contain'
                                                 priority
                                             />
                                         </div>
