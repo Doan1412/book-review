@@ -10,10 +10,11 @@ import { FaRegUserCircle } from "react-icons/fa";
 export default function Navigation() {
   const navigateButton = [{ url: "/", icon: <TbHome size={25} /> }];
   const [token, setToken] = useState<string | null>(null);
-
+  const [role, setRole] = useState<string | null>(null)
   useEffect(() => {
     if (hasCookie("token")) {
       setToken(getCookie("token") as string);
+      setRole(getCookie("role") as string);
     }
   }, []);
 
@@ -29,13 +30,17 @@ export default function Navigation() {
 
     {token ? (
         <div className="space-y-2 flex flex-col">
-          <Link href={"/book/create"} className="iconButton">
-            <LuBookPlus size={25} />
-          </Link>
+          { role === "1" && (
+            <>
+              <Link href={"/book/create"} className="iconButton">
+                <LuBookPlus size={25} />
+              </Link>
 
-          <Link href={"/categories"} className="iconButton">
-            <LuGrid size={25}/>
-          </Link>
+              <Link href={"/categories"} className="iconButton">
+                <LuGrid size={25}/>
+              </Link></>
+            ) 
+          }
 
           <Link href={"/profile"} className="iconButton">
             <FaRegUserCircle size={25}/>

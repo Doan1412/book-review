@@ -106,18 +106,14 @@ export default function Home() {
                                         title={`${value.title}`}
                                     >
                                         <div className="flex items-center justify-center overflow-hidden w-100 h-100">
-                                            <Image
+                                            <img
                                                 src={
                                                     process.env.BACKEND_URL +
                                                     `static/${value.image}`
                                                 }
                                                 alt={`${value.title}`}
                                                 title={`${value.title}`}
-                                                width = {500}
-                                                height={100}
-                                                className="w-auto object-cover "
-                                                objectFit='contain'
-                                                priority
+                                                className="object-cover h-[450px] w-full"
                                             />
                                         </div>
                                         <div className="flex flex-col p-2">
