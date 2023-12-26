@@ -127,10 +127,9 @@ export default function Edit() {
         setLoading(true);
         if (
             !id ||
-            id.trim() === "" ||
             author.trim() === "" ||
             title.trim() === "" ||
-            description.trim() === ""
+            description.trim() === "" 
         ) {
             setError("Vui lòng nhập đủ các trường.");
             setLoading(false);

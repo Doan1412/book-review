@@ -80,8 +80,8 @@ def index():
     author = request.args.get("author", type=str, default="")
     title = request.args.get("title", type=str, default="")
     try:
-        # books = Book.query.filter_by(deleted_at=None).order_by(asc(Book.title))
-        books = Book.query.order_by(asc(Book.title))
+        books = Book.query.filter_by(deleted_at=None).order_by(asc(Book.title))
+        # books = Book.query.order_by(asc(Book.title))
         if author or title:
             search_conditions = []
             if author:

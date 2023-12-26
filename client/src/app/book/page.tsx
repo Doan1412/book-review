@@ -236,7 +236,7 @@ export default function Detail_book() {
                         </div>
                     )}
                     <div className="p-6">
-                        <div className="w-full bg-[#f0eee3] flex flex-row items-center justify-center space-x-16">
+                        <div className="w-full bg-[#f2f1ea] flex flex-row items-center justify-center space-x-16">
                             {book &&
                                 book.image && ( // Check if book and book.img are defined
                                     <Image
@@ -253,8 +253,8 @@ export default function Detail_book() {
                                     />
                                 )}
 
-                            <div className="flex flex-col justify-center">
-                                <span className="font-bold uppercase text-2xl truncate leading-loose">
+                            <div className="flex flex-col justify-center w-1/2">
+                                <span className="font-bold uppercase text-2xl leading-loose h-fit">
                                     {book.title}
                                 </span>
                                 <span className="italic truncate text-xl text-[#848484]">
@@ -263,7 +263,7 @@ export default function Detail_book() {
                             </div>
                         </div>
 
-                        <div className="bg-[#fdfcf8] w-full rounded-xl -mt-12">
+                        <div className="bg-[#fdfcf8] w-full rounded-xl -mt-6">
                             {role === "1" && (
                                 <div className="flex flex-row justify-end items-center px-6 pt-4 space-x-4">
                                     <Button className="iconButton">

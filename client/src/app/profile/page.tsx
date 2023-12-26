@@ -82,11 +82,7 @@ export default function Profile() {
                                 </div>
                                 <div className="mb-4">
                                     <p className="text-gray-700 font-bold">Created At:</p>
-                                    <p className="text-gray-900">{user.created_at.toLocaleString()}</p>
-                                </div>
-                                <div className="mb-4">
-                                    <p className="text-gray-700 font-bold">Updated At:</p>
-                                    <p className="text-gray-900">{user.updated_at.toLocaleString()}</p>
+                                    <p className="text-gray-900">{user.created_at.toLocaleString().split('.')[0]}</p>
                                 </div>
                                 {/* Add more user details as needed */}
                                 </div>

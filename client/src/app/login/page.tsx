@@ -60,7 +60,7 @@ export default function Login() {
         setNoti(message);
       }
     } catch (error) {
-      setNoti("Đã xảy ra lỗi trong quá trình xử lý đăng nhập");
+      setNoti("Đăng nhập thất bại");
     } finally {
       setLoading(false);
     }

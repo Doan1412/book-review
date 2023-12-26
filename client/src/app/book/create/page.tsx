@@ -50,7 +50,7 @@ export default function Edit() {
                 const headers = new Headers();
                 headers.append("Accept", "application/json");
                 headers.append("Content-Type", "application/json");
-                fetch(process.env.BACKEND_URL + "/api/v1/category", {
+                fetch(process.env.BACKEND_URL + "/api/v1/category?per_page=100", {
                     method: "GET",
                     headers: headers,
                 })
@@ -88,7 +88,10 @@ export default function Edit() {
         if (
             author.trim() === "" ||
             title.trim() === "" ||
-            description.trim() === ""
+            description.trim() === "" ||
+            price === 0 || 
+            categories === null ||
+            image === null
         ) {
             setError("Vui lòng nhập đủ các trường.");
             setLoading(false);

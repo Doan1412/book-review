@@ -89,21 +89,17 @@ export default function Home() {
                                             className="flex flex-col justify-center border outline-none shadow-xl rounded-xl w-72 h-fit overflow-hidden hover:opacity-80"
                                             title={`${value.title}`}
                                         >
-                                            <div className="flex items-center justify-center overflow-hidden w-100 h-100">
-                                                <Image
-                                                    src={
-                                                        process.env
-                                                            .BACKEND_URL +
-                                                        `static/${value.image}`
-                                                    }
-                                                    alt={`${value.title}`}
-                                                    title={`${value.title}`}
-                                                    width={500}
-                                                    height={500}
-                                                    className="w-auto object-cover"
-                                                    priority
-                                                />
-                                            </div>
+                                        <div className="flex items-center justify-center overflow-hidden w-100 h-100">
+                                            <img
+                                                src={
+                                                    process.env.BACKEND_URL +
+                                                    `static/${value.image}`
+                                                }
+                                                alt={`${value.title}`}
+                                                title={`${value.title}`}
+                                                className="object-cover h-[450px] w-full"
+                                            />
+                                        </div>
                                             <div className="flex flex-col p-2">
                                                 <span className="font-bold uppercase truncate">
                                                     {value.title}

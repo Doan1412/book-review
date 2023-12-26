@@ -3,7 +3,7 @@ import Button from "@/components/Button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-
+import Popup from "@/components/Popup";
 export default function Register() {
     const router = useRouter();
     const [loading, setLoading] = useState<boolean>(false);
@@ -13,7 +13,7 @@ export default function Register() {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [retype, setRetype] = useState<string>("");
-
+    const [noti, setNoti] = useState<string | null>(null);
     const handleForm = (event: React.SyntheticEvent) => {
         event.preventDefault();
         setError(null);
@@ -48,17 +48,17 @@ export default function Register() {
             }),
         })
             .then((resp) => {
-                if (!resp.ok) console.error(resp.status);
-                return resp.json();
+                if (!resp.ok) setNoti("Đăng kí thất bại");
+                else router.push("/login");
             })
             .then(() => {
                 setLoading(false);
-                router.push("/login");
             });
     };
 
     return (
         <div className="h-full flex flex-row overflow-hidden">
+            {noti && <Popup message={noti} close={() => setNoti(null)} />}
             <div className="flex flex-col items-center justify-center flex-1 space-y-6">
                 <form
                     onSubmit={handleForm}

@@ -319,7 +319,7 @@ export default function Categories() {
                 Trở về
               </Button>
               <Button onClick={() => {if (editingCategoryName?.trim() !== "") UpdateCategory()}} className="bg-[#c7c4bd] text-white">
-                Thêm
+                Cập nhật
               </Button>
             </div>
           </div>
@@ -378,36 +378,6 @@ export default function Categories() {
                 aria-label="Category Table"
                 topContent={
                   <div className="flex items-center space-x-1">
-                  <FiSearch size={20} />
-                  <Input
-                  isClearable
-                  classNames={{
-                    label: "text-black/50 dark:text-black/90",
-                    input: [
-                      "bg-transparent",
-                      "text-black/90 dark:text-black/90",
-                      "placeholder:text-default-700/50 dark:placeholder:text-black/60",
-                    ],
-                    innerWrapper: "bg-transparent rounded-md sm:max-w-[44%]",
-                    inputWrapper: [
-                      "sm:max-w-[44%]",
-                      "rounded-md",
-                      "bg-[#f0eee3]",
-                      "dark:bg-[#f0eee3]",
-                      "backdrop-blur-xl",
-                      "backdrop-saturate-200",
-                      "hover:bg-[#f0eee3]",
-                      "dark:hover:bg-[#f0eee3]",
-                      "group-data-[focused=true]:bg-[#f0eee3]",
-                      "dark:group-data-[focused=true]:bg-default/60",
-                      "!cursor-text",
-                    ],
-                  }}
-                  placeholder="Tìm kiếm theo tên danh mục..."
-                  value={filterValue}
-                  onClear={() => onClear()}
-                  onValueChange={onSearchChange}
-                    />
                   <Button onClick={() => setIsAddCategory(true)} className="iconButton">
                     Thêm
                   </Button>
@@ -462,8 +432,8 @@ export default function Categories() {
                     <TableRow key={category.id}>
                       <TableCell >{category.id}</TableCell>
                       <TableCell>{category.name}</TableCell>
-                      <TableCell>{category.created_at}</TableCell>
-                      <TableCell>{category.updated_at}</TableCell>
+                      <TableCell>{category.created_at.toString().split('.')[0]}</TableCell>
+                      <TableCell>{category.updated_at?.toString().split('.')[0]}</TableCell>
                       <TableCell>
                         <div className="relative flex items-center gap-2">
                           <Button onClick={() => {setEditingCategoryId(category.id); setEditingCategoryName(category.name)}} className="iconButton">
